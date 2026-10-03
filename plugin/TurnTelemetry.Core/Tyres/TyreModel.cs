@@ -186,14 +186,26 @@ namespace TurnTelemetry.Core.Tyres
         }
     }
 
+    /// <summary>
+    /// SimHub reports temperatures in the user's display unit. Its names (GameReaderCommon.LocalTemperatureUnit) are
+    /// "Celcius" (sic), "Fahrenheit" and "Kelvin"; colours are always decided in Celsius.
+    /// </summary>
     public static class TemperatureUnits
     {
-        /// <summary>SimHub's TemperatureUnit label, e.g. "Celsius" or "Fahrenheit".</summary>
-        public static bool IsFahrenheit(string unit) =>
-            !string.IsNullOrEmpty(unit) && unit.Trim().StartsWith("F", StringComparison.OrdinalIgnoreCase);
+        /// <summary>"C", "F" or "K" for a SimHub unit name (or a short code / "°F" style label); unknown means Celsius.</summary>
+        public static string Code(string unit)
+        {
+            var u = (unit ?? string.Empty).Trim().TrimStart('\u00b0').ToUpperInvariant();
+            if (u.StartsWith("F")) return "F";
+            if (u.StartsWith("K")) return "K";
+            return "C";
+        }
 
-        public static double ToCelsius(double f) => (f - 32) * 5 / 9;
-        public static double ToFahrenheit(double c) => c * 9 / 5 + 32;
+        public static double ToCelsius(double value, string code) =>
+            code == "F" ? (value - 32) * 5 / 9 : code == "K" ? value - 273.15 : value;
+
+        public static double FromCelsius(double celsius, string code) =>
+            code == "F" ? celsius * 9 / 5 + 32 : code == "K" ? celsius + 273.15 : celsius;
     }
 
     public static class PressureUnits
@@ -253,7 +265,7 @@ namespace TurnTelemetry.Core.Tyres
         public TyrePreset Preset { get; private set; } = TyrePresetMatcher.Fallback;
         public string Compound { get; private set; }
         public string PressureUnit { get; set; } = "psi";
-        /// <summary>"C" or "F": the unit of the published temperatures (SimHub's display unit).</summary>
+        /// <summary>"C", "F" or "K": the unit of the published temperatures (SimHub's display unit).</summary>
         public string TemperatureUnit { get; private set; } = "C";
         /// <summary>Latched once inner/middle/outer differ on any tyre this session; until then draw one colour per tyre.</summary>
         public bool ZonesDetected { get; private set; }
@@ -269,9 +281,9 @@ namespace TurnTelemetry.Core.Tyres
         public void Update(GameSnapshot s, WearMeaning wear, bool wearAvailable = true)
         {
             var window = Preset.Temp ?? new TyrePreset.TempWindow();
-            var fahrenheit = TemperatureUnits.IsFahrenheit(s.TemperatureUnit);
-            TemperatureUnit = fahrenheit ? "F" : "C";
-            double C(double v) => fahrenheit ? TemperatureUnits.ToCelsius(v) : v;
+            var unit = TemperatureUnits.Code(s.TemperatureUnit);
+            TemperatureUnit = unit;
+            double C(double v) => TemperatureUnits.ToCelsius(v, unit);
 
             for (var i = 0; i < 4; i++)
             {
@@ -283,7 +295,7 @@ namespace TurnTelemetry.Core.Tyres
                 c.TempInner = r.TempInner;
                 c.TempMiddle = r.TempMiddle;
                 c.TempOuter = r.TempOuter;
-                c.TempAverage = avg <= 0 ? 0 : fahrenheit ? TemperatureUnits.ToFahrenheit(avg) : avg;
+                c.TempAverage = avg <= 0 ? 0 : TemperatureUnits.FromCelsius(avg, unit);
                 c.ColorInner = TyreColors.ForTemperature(inner, window);
                 c.ColorMiddle = TyreColors.ForTemperature(middle, window);
                 c.ColorOuter = TyreColors.ForTemperature(outer, window);

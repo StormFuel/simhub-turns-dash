@@ -6,10 +6,12 @@ Writes dash/TurnTelemetryDashboard/{TurnTelemetryDashboard.djson, .djson.ressour
 Everything sim-specific comes from the TurnTelemetry plugin (property contract v1, docs/architecture.md).
 """
 import argparse
+import shutil
 from pathlib import Path
 
 import carbon
 import dashlib
+import fontcheck
 import livery
 import themes
 from dashlib import (track_map, ABS, ACCENT, BRAKE, CENTER, CLEAR, CURRENT, GUIDE, HAIRLINE, INK, LEFT, LIGHT_OFF, MUTED,
@@ -19,7 +21,7 @@ from dashlib import (track_map, ABS, ACCENT, BRAKE, CENTER, CLEAR, CURRENT, GUID
 ROOT = Path(__file__).resolve().parent.parent
 NAME = 'TurnTelemetry'
 OUT = ROOT / 'dash' / NAME
-VERSION = '0.2.2'
+VERSION = '0.2.3'
 CONTRACT = 2
 
 W, H = 1920, 1080
@@ -58,12 +60,12 @@ def top_bar(items):
     x = 980
     items.append(text('Lap label', x, 30, 60, 52, 'LAP', 18, MUTED))
     items.append(text('Lap number', x + 50, 30, 70, 52, '0', 32, TEXT, display=True).bind('Text', f'isnull([{GD}CurrentLap],0)'))
-    items.append(lap_time('CurrentLapTime', 'Current lap', x + 130, 26, 230, 60, 38, TEXT))
-    items.append(builtin('LiveDeltaToBestText', 'Delta', x + 370, 26, 170, 60, 34, TEXT, display=True, Format='+0.00;-0.00',
+    items.append(lap_time('CurrentLapTime', 'Current lap', x + 130, 26, 230, 60, TIME_SIZE, TEXT))
+    items.append(builtin('LiveDeltaToBestText', 'Delta', x + 370, 26, 170, 60, DELTA_SIZE, TEXT, display=True, Format='+0.00;-0.00',
                          NoDataText='').bind(
         'TextColor', f"if(isnull([PersistantTrackerPlugin.SessionBestLiveDeltaSeconds],0) <= 0, '{GOOD}', '{BAD}')"))
     items.append(text('Best label', x + 560, 30, 70, 52, 'BEST', 18, MUTED))
-    items.append(lap_time('BestLapTime', 'Best lap', x + 620, 26, 260, 60, 34, ACCENT, align=LEFT))
+    items.append(lap_time('BestLapTime', 'Best lap', x + 620, 26, 260, 60, BEST_SIZE, ACCENT, align=LEFT))
 
 
 def focal_column(items):
@@ -123,7 +125,7 @@ def focal_column(items):
     items.append(text('Speed unit', LX + 160, 885, 180, 36, 'KM/H', 20, MUTED, RIGHT)
                  .bind('Text', f"if(isnull([{GD}SpeedLocalUnit],'KMH')='MPH','MPH','KM/H')"))
     # RPM under the gear: white, bright red while SimHub reports the redline/limiter reached.
-    items.append(text('RPM', LX + 10, 896, 150, 40, '0', 30, TEXT, CENTER, display=True)
+    items.append(text('RPM', LX + 10, 896, 150, 40, '0', RPM_SIZE, TEXT, CENTER, display=True)
                  .bind_js('Text', f"var r=$prop('{GD}Rpms'); return r ? Math.round(r) : '0';")
                  .bind('TextColor', f"if(isnull([{GD}CarSettings_RPMRedLineReached],0) >= 1,'{LIMITER}','{TEXT}')"))
     items.append(text('RPM label', LX + 10, 934, 150, 22, 'RPM', 14, MUTED, CENTER))
@@ -336,9 +338,10 @@ def conditions(items):
     items.append(rect('Conditions divider', RX + 20, TOP + 98, RW - 40, 1, GUIDE))
     for key, label, x, field in (('Air', 'AIR', RX + 20, 'AirTemperature'), ('Track', 'TRACK', RX + 200, 'RoadTemperature')):
         items.append(text(f'{key} temp label', x, TOP + 108, 150, 26, label, 18, LABEL))
-        items.append(text(f'{key} temp', x, TOP + 134, 160, 56, '', 44, TEXT, LEFT, number=True)
+        items.append(text(f'{key} temp', x, TOP + 134, 160, 56, '', COND_TEMP_SIZE, TEXT, LEFT, number=True)
                      .bind_js('Text', (f"var t=$prop('{GD}{field}'); if(!t) return '';"
-                                       f"return Math.round(t) + '\u00b0' + ($prop('{TT}Tyre.TempUnit')||'');")))
+                                       f"var u=$prop('{TT}Tyre.TempUnit')||'';"
+                                       "return Math.round(t) + (u==='K' ? ' K' : '\u00b0' + u);")))
 
 
 def tyres(items):
@@ -347,7 +350,7 @@ def tyres(items):
     items.append(panel('Tyres panel', RX, top, RW, BOTTOM - top))
     items.append(text('Tyres label', RX + 20, top + 10, 200, 30, 'TYRES', 20, LABEL))
     items.append(text('Temp unit', RX + RW - 120, top + 10, 100, 30, '°C', 18, MUTED, RIGHT)
-                 .bind('Text', f"'°' + isnull({p('Tyre.TempUnit')},'C')"))
+                 .bind('Text', f"if(isnull({p('Tyre.TempUnit')},'C')='K','K','°' + isnull({p('Tyre.TempUnit')},'C'))"))
 
     # Shorter tyres (user request 2026-10-03: room for wipers / lights / temperatures above).
     tw, th = 110, 130
@@ -440,7 +443,7 @@ def status_bar(items):
     items.append(text('Flag label', 1620, 1005, 70, 50, 'FLAG', 22, MUTED))
     items.append(rect('Flag swatch', 1690, 1012, 182, 36, LIGHT_OFF, border(HAIRLINE, 1, 6))
                  .bind_js('BackgroundColor', flags.replace('IDX', '1').replace('DEFAULT', f"'{LIGHT_OFF}'")))
-    items.append(text('Flag name', 1690, 1012, 182, 36, '', 18, MUTED, CENTER, display=True)
+    items.append(text('Flag name', 1690, 1012, 182, 36, '', FLAG_SIZE, MUTED, CENTER, display=True)
                  .bind_js('Text', flags.replace('IDX', '3').replace('DEFAULT', "'NO FLAG'"))
                  .bind_js('TextColor', flags.replace('IDX', '2').replace('DEFAULT', f"'{MUTED}'")))
 
@@ -480,8 +483,34 @@ def build(theme):
     bad = check_bounds(dash, W, H)
     if bad:
         raise SystemExit(f'items out of bounds: {bad}')
+    # Every font must be known to both Dash Studio (DashFonts family) and the tablet (Web/FontFaces.css), with glyphs
+    # for what it shows; otherwise the tablet silently falls back to a serif.
+    font_problems = fontcheck.check_dash(out / f'{NAME}.djson')
+    if font_problems:
+        raise SystemExit('font check failed:\n  ' + '\n  '.join(font_problems))
     print(f'built {out} ({len(items)} items)')
     return out
+
+
+# Real in-game screenshot of the released dashboard (ACC Monza, 2026-10-03, after the font fix), used as its SimHub thumbnail.
+SCREENSHOT = ROOT / 'docs' / 'images' / 'screenshot-dashboard.png'
+
+
+def thumbnail(out, name, key):
+    """SimHub's dashboard thumbnail: <name>.djson.png (main preview) and <name>.djson.00.png (screen 0). The released
+    look uses the real in-game screenshot; other themes get a preview_dash.py render with sample data. install() and
+    package_release.py pick them up with the other <name>.djson* files."""
+    import subprocess
+    import sys
+    png = Path(out) / f'{name}.djson.png'
+    if key == 'livery' and SCREENSHOT.exists():
+        shutil.copy2(SCREENSHOT, png)
+    else:
+        theme_args = [] if key == 'classic' else ['--theme', key]
+        subprocess.run([sys.executable, str(ROOT / 'tools' / 'preview_dash.py'), str(Path(out) / f'{name}.djson'), str(png)]
+                       + theme_args, check=True, capture_output=True)
+        png.with_suffix('.html').unlink(missing_ok=True)
+    shutil.copy2(png, Path(out) / f'{name}.djson.00.png')
 
 
 if __name__ == '__main__':
@@ -492,5 +521,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     for key in sorted(themes.THEMES) if args.theme == 'all' else [args.theme]:
         out = build(themes.THEMES[key])
+        thumbnail(out, themes.THEMES[key]['NAME'], key)
         if args.install:
             print('installed to', install(out, themes.THEMES[key]['NAME']))

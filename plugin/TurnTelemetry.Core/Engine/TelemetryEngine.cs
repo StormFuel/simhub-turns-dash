@@ -615,8 +615,8 @@ namespace TurnTelemetry.Core.Engine
         /// </summary>
         private void ApplyRawTyreTemps(GameSnapshot s, IRawData raw)
         {
-            var fahrenheit = TemperatureUnits.IsFahrenheit(s.TemperatureUnit);
-            double ToCelsius(double v) => fahrenheit ? TemperatureUnits.ToCelsius(v) : v;
+            var unit = TemperatureUnits.Code(s.TemperatureUnit);
+            double ToCelsius(double v) => TemperatureUnits.ToCelsius(v, unit);
             bool Present(double v) => ToCelsius(v) > 0;
 
             TyreTempsFromRaw = false;
@@ -646,7 +646,7 @@ namespace TurnTelemetry.Core.Engine
                 return;
             }
 
-            double FromCelsius(double c) => c > 0 ? (fahrenheit ? TemperatureUnits.ToFahrenheit(c) : c) : 0;
+            double FromCelsius(double c) => c > 0 ? TemperatureUnits.FromCelsius(c, unit) : 0;
             for (var i = 0; i < 4; i++)
             {
                 s.Tyres[i].TempInner = FromCelsius(_rawTemps[i, 0]);

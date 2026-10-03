@@ -9,7 +9,7 @@ A SimHub plugin and 1920×1080 dashboard for a tablet or second screen. It shows
 
 The corner tile carries on from [Assetto Corsa Turns](https://github.com/StormFuel/assetto-corsa-turns).
 
-![Turn Telemetry Dashboard in ACC at Brands Hatch](docs/images/screenshot-dashboard.png)
+![Turn Telemetry Dashboard in ACC at Monza](docs/images/screenshot-dashboard.png)
 
 ## Install
 

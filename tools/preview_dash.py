@@ -14,6 +14,8 @@ import re
 import subprocess
 import sys
 import zipfile
+
+import fontcheck
 from pathlib import Path
 
 FONT_DIR = Path(r'C:\Program Files (x86)\SimHub\DashFonts')
@@ -22,6 +24,9 @@ FONT_FILES = {'DIN 1451 Std Mittelschrift': 'DINMittelschriftStd.ttf', 'EurasiaE
               'Eurostar Black Extended': 'eurostarblackextended.ttf'}
 BROWSERS = [Path(r'C:\Program Files\Google\Chrome\Application\chrome.exe'),
             Path(r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe')]
+
+PLUGIN_VERSION = re.search(r'<Version>([^<]+)</Version>',
+                           (Path(__file__).resolve().parent.parent / 'plugin' / 'Directory.Build.props').read_text()).group(1)
 
 # Sample state: ACC-like session, inside turn 7, warm tyres, one tyre slightly hot.
 TURNS = [(0.03, 0.06), (0.11, 0.14), (0.18, 0.20), (0.26, 0.30), (0.36, 0.38), (0.41, 0.45),
@@ -47,7 +52,7 @@ TEXT = {
     'Temp unit': '°F', 'Compound': 'DRY COMPOUND  ·  ACC-DRY', 'RPM': '7840',
     'TC cut value': '3', 'TC value': '3', 'ABS value': '2', 'BB value': '56.2', 'MAP value': '2',
     'Flag name': 'YELLOW', 'Wipers state': 'OFF', 'Lights state': 'ON', 'Air temp': '81°F', 'Track temp': '96°F',
- 'Plugin info': 'TURN TELEMETRY 0.1.0  ·  ACC', 'Standings count': '20 CARS', 'Limits count': 'TRACK LIMITS  2',
+ 'Plugin info': f'TURN TELEMETRY {PLUGIN_VERSION}  ·  ACC', 'Standings count': '20 CARS', 'Limits count': 'TRACK LIMITS  2',
     'Row 1 Position': '1', 'Row 1 Name': 'M. ROSSI', 'Row 1 S1': '35.112', 'Row 1 S2': '41.870', 'Row 1 S3': '38.214', 'Row 1 Best': '1:55.196', 'Row 1 BestDelta': 'FASTEST', 'Row 1 Gap': 'LEADER', 'Row 2 Position': '2', 'Row 2 Name': 'K. TANAKA', 'Row 2 S1': '35.240', 'Row 2 S2': '41.802', 'Row 2 S3': '38.330', 'Row 2 Best': '1:55.402', 'Row 2 BestDelta': '+0.206', 'Row 2 Gap': '+1.8', 'Row 3 Position': '3', 'Row 3 Name': 'L. BAUER', 'Row 3 S1': '35.301', 'Row 3 S2': '42.011', 'Row 3 S3': '38.198', 'Row 3 Best': '1:55.611', 'Row 3 BestDelta': '+0.415', 'Row 3 Gap': '+4.3', 'Row 4 Position': '4', 'Row 4 Name': 'YOU', 'Row 4 S1': '35.188', 'Row 4 S2': '41.954', 'Row 4 S3': '38.402', 'Row 4 Best': '1:55.544', 'Row 4 BestDelta': '+0.348', 'Row 4 Gap': '+6.9', 'Row 5 Position': '5', 'Row 5 Name': 'A. SILVA', 'Row 5 S1': '35.402', 'Row 5 S2': '42.150', 'Row 5 S3': '38.511', 'Row 5 Best': '1:56.063', 'Row 5 BestDelta': '+0.867', 'Row 5 Gap': '+9.2', 'Row 6 Position': '6', 'Row 6 Name': 'J. MARTIN', 'Row 6 S1': '35.517', 'Row 6 S2': '42.098', 'Row 6 S3': '38.620', 'Row 6 Best': '1:56.235', 'Row 6 BestDelta': '+1.039', 'Row 6 Gap': '+12.4', 
 }
 COLOR_OVERRIDES = {'Row 4 player': '#402F7DFF', 'Row 4 Name': '#FF2F7DFF', 'Row 1 Best': '#FFB44BFF', 'Row 1 S1': '#FFB44BFF',
@@ -241,7 +246,8 @@ def render_item(item, images):
         color = colors.get(base, item.get('TextColor') or item.get('GearTextColor') or '#FFFFFFFF')
         just = ['flex-start', 'center', 'flex-end'][item.get('HorizontalAlignment', 0)]
         style += (f'display:flex;align-items:center;justify-content:{just};font-size:{item["FontSize"]}px;'
-                  f'color:{css_color(color)};white-space:nowrap;line-height:1;font-family:&quot;{item.get("Font", "DIN")}&quot;,DIN;'
+                  f'color:{css_color(color)};white-space:nowrap;line-height:1;font-family:&quot;{item.get("Font", "DIN")}&quot;,serif;'
+                  f'font-weight:{fontcheck.normalise_weight(item.get("FontWeight"))};'
                   f'font-style:{"italic" if item.get("FontStyle") == "Italic" else "normal"};')
         return f'<div style="{style}">{value}</div>'
     return f'<div style="{style}"></div>'
@@ -256,7 +262,9 @@ def main(djson, png):
             images[Path(n).stem] = base64.b64encode(z.read(n)).decode()
     w, h = dash['BaseWidth'], dash['BaseHeight']
     body = ''.join(render_item(i, images) for i in dash['Screens'][0]['Items'])
-    faces = ''.join(f'@font-face{{font-family:"{fam}";src:url("{(FONT_DIR / f).as_uri()}")}}' for fam, f in FONT_FILES.items())
+    # Like SimHub's web client: only families declared in Web/FontFaces.css exist; anything else falls back to serif.
+    faces = ''.join(f'@font-face{{font-family:"{fam}";font-weight:{w};src:url("{(FONT_DIR / f).as_uri()}")}}'
+                    for fam, weights in fontcheck.font_faces().items() for w, f in weights.items() if (FONT_DIR / f).exists())
     html = (f'<html><head><style>{faces}@font-face{{font-family:DIN;src:url("{(FONT_DIR / FONT_FILES["DIN 1451 Std Mittelschrift"]).as_uri()}")}}'
             f'body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;font-family:DIN,sans-serif;background:#0A0B0D}}'
             f'</style></head><body>{body}</body></html>')

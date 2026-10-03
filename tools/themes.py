@@ -21,6 +21,9 @@ CLASSIC = {
     'FONT': 'DIN 1451 Std Mittelschrift', 'FONT_WEIGHT': 'Normal',
     'FONT_DISPLAY': 'DIN 1451 Std Mittelschrift', 'DISPLAY_WEIGHT': 'Normal', 'DISPLAY_STYLE': 'Normal',
     'FOCAL_SIZE': 115, 'GEAR_SIZE': 180, 'STATE_SIZE': 30, 'SPEED_SIZE': 90,   # turn tile halved for the map (2026-10-03)
+    # Display-font sizes, set per theme so wide faces fit their boxes (checked against worst-case strings such as
+    # 10:59.999, +12.34, 10500 rpm, 104°F, CHEQUERED with tools/fontcheck.text_width).
+    'TIME_SIZE': 38, 'BEST_SIZE': 34, 'DELTA_SIZE': 34, 'RPM_SIZE': 30, 'COND_TEMP_SIZE': 44, 'FLAG_SIZE': 18,
     'GLOW': 0,                      # blur radius of the glow layer behind key elements; 0 = none
     'LABEL': '#FF8B97A8',           # section labels (PEDALS, STEERING, LAP, TYRES...)
     'CHART_WIDTH': 3,
@@ -48,11 +51,15 @@ NEON = dict(CLASSIC, **{
     'BAND': '#26FFFFFF', 'STRIP': '#14FFFFFF',
     'NODATA': '#FF262B26', 'TYRE_OUTLINE': '#997CFF00', 'WEAR_TRACK': '#33FFFFFF',
     'TYRE_COLOR_SUFFIX': 'Neon',    # Tyre.<c>.ColorNeon.<z>, .PressureColorNeon, .WearColorNeon
-    # Skate-style type, both shipped with SimHub (DashFonts): fat Futura Bold Oblique for big numbers and headers,
+    # Skate-style type, both shipped with SimHub (DashFonts): fat EurasiaEx Bold Oblique for big numbers and headers (was Futura, which the tablet lacks),
     # fat condensed Oswald Bold for labels and data so small text stays legible (user request 2026-10-03).
     'FONT': 'Oswald', 'FONT_WEIGHT': 'Bold',
-    'FONT_DISPLAY': 'Futura', 'DISPLAY_WEIGHT': 'Bold', 'DISPLAY_STYLE': 'Italic',
-    'FOCAL_SIZE': 100, 'GEAR_SIZE': 160, 'STATE_SIZE': 32, 'SPEED_SIZE': 78,  # turn tile halved for the map; italics overhang
+    # Fonts must be both a DashFonts family and a Web/FontFaces.css family, or the tablet shows a serif (2026-10-03:
+    # "Futura" failed both; tools/fontcheck.py enforces this at build time).
+    'FONT_DISPLAY': 'EurasiaEx', 'DISPLAY_WEIGHT': 'Bold', 'DISPLAY_STYLE': 'Italic',
+    'FOCAL_SIZE': 100, 'GEAR_SIZE': 120, 'STATE_SIZE': 32, 'SPEED_SIZE': 50,  # turn tile halved for the map; italics overhang
+    # EurasiaEx Bold is far wider than Futura: sizes cut so worst-case values fit (2026-10-03 font fix).
+    'TIME_SIZE': 32, 'BEST_SIZE': 32, 'DELTA_SIZE': 30, 'RPM_SIZE': 26, 'COND_TEMP_SIZE': 34, 'FLAG_SIZE': 16,
     'GLOW': 0,      # blur glows off: WPF BlurEffect is GPU shader work; a GPU hang on the test PC followed launching this dash (2026-10-03)
     'LABEL': '#FF7CFF00',
     'CHART_WIDTH': 4,
@@ -75,10 +82,11 @@ LIVERY = dict(NEON, **{
     'BAND': '#2EFFFFFF',
     'LABEL': '#FFA8F000',
     'FONT': 'Oswald', 'FONT_WEIGHT': 'Bold',
-    'FONT_DISPLAY': 'Futura', 'DISPLAY_WEIGHT': 'Bold', 'DISPLAY_STYLE': 'Normal',
-    # Squared, extended race-number face shipped with SimHub; wide, so sizes are trimmed to fit "18", "8A", "287".
-    'FONT_NUMBER': 'Eurostar Black Extended', 'NUMBER_WEIGHT': 'Normal', 'NUMBER_STYLE': 'Normal',
-    'FOCAL_SIZE': 92, 'GEAR_SIZE': 130, 'SPEED_SIZE': 56,
+    'FONT_DISPLAY': 'EurasiaEx', 'DISPLAY_WEIGHT': 'Bold', 'DISPLAY_STYLE': 'Normal',
+    # Was 'Eurostar Black Extended': its file family isn't in Web/FontFaces.css (registered there as 'Eurostar'),
+    # so the tablet drew a serif. EurasiaEx Bold is wide, fat and passes both checks.
+    'FONT_NUMBER': 'EurasiaEx', 'NUMBER_WEIGHT': 'Bold', 'NUMBER_STYLE': 'Normal',
+    'FOCAL_SIZE': 92, 'GEAR_SIZE': 120, 'SPEED_SIZE': 50,   # 130 / 56 with Eurostar; EurasiaEx is wider
     'GLOW': 0,
     'SLASH': None,                  # the artwork lives in the background
     'BACKGROUND': 'livery',

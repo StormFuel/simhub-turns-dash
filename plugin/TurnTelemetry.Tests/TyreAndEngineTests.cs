@@ -117,6 +117,44 @@ namespace TurnTelemetry.Tests
             Assert.False(model.ZonesDetected);
         }
 
+        /// <summary>The same physical tyre (85 C) and an empty one, in each of SimHub's display units.</summary>
+        [Theory]
+        [InlineData("Celcius", 85, 0, "C")]          // SimHub's own spelling
+        [InlineData("Celsius", 85, 0, "C")]
+        [InlineData("Fahrenheit", 185, 32, "F")]
+        [InlineData("Kelvin", 358.15, 273.15, "K")]
+        [InlineData(null, 85, 0, "C")]
+        public void Colours_are_decided_in_celsius_whatever_the_display_unit(string unit, double hot85, double empty, string code)
+        {
+            var model = new TyreModel();
+            model.SetPreset(new TyrePreset { Temp = Window }, null);
+            var s = new GameSnapshot { TemperatureUnit = unit };
+            s.Tyres[0].TempInner = s.Tyres[0].TempMiddle = s.Tyres[0].TempOuter = s.Tyres[0].TempAverage = empty;
+            s.Tyres[1].TempInner = s.Tyres[1].TempMiddle = s.Tyres[1].TempOuter = hot85;
+            s.Tyres[2].TempInner = s.Tyres[2].TempMiddle = s.Tyres[2].TempOuter = TemperatureUnits.FromCelsius(110, code);
+            s.Tyres[3].TempInner = s.Tyres[3].TempMiddle = s.Tyres[3].TempOuter = TemperatureUnits.FromCelsius(50, code);
+
+            model.Update(s, WearMeaning.Remaining);
+
+            Assert.Equal(code, model.TemperatureUnit);
+            Assert.Equal(TyreColors.NoData, model.Corners[0].ColorMiddle);
+            Assert.Equal(TyreColors.Optimal, model.Corners[1].ColorMiddle);   // 85 C in an 80-95 window
+            Assert.Equal(TyreColors.Hot, model.Corners[2].ColorMiddle);
+            Assert.Equal(TyreColors.Cold, model.Corners[3].ColorMiddle);
+            Assert.Equal(hot85, model.Corners[1].TempAverage, 6);              // published in SimHub's unit
+        }
+
+        [Theory]
+        [InlineData("Celcius", "C")]
+        [InlineData("Fahrenheit", "F")]
+        [InlineData("Kelvin", "K")]
+        [InlineData("\u00b0F", "F")]
+        [InlineData("", "C")]
+        public void Unit_codes(string unit, string code)
+        {
+            Assert.Equal(code, TemperatureUnits.Code(unit));
+        }
+
         [Fact]
         public void Zones_are_detected_only_when_inner_middle_outer_differ()
         {

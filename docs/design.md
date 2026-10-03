@@ -118,7 +118,7 @@ A tool in `tools/` generates the texture so there is no licensing question. It p
 | TC / ABS | amber / violet | `#FFEA00` electric yellow / `#C042FF` violet |
 | Panels | smoked glass, grey hairline | near-black, lime hairline |
 | Tyres (plugin `TyrePalette.Neon`, published as `*.ColorNeon.*`, `*.PressureColorNeon`, `*.WearColorNeon`) | blue / green / yellow / red | `#00B3FF` / `#39FF14` / `#FFEA00` / `#FF1744` |
-| Type | DIN throughout | Skate style, both shipped with SimHub. **Futura Bold Oblique** for display text (turn number 190 px, NEXT/CURRENT, gear, speed, lap times, delta, upcoming turn); **Oswald Bold** (fat, condensed) for labels and data so small text stays legible. `8A`, `18`, and `287` checked to fit. |
+| Type | DIN throughout | Skate style, both shipped with SimHub. **EurasiaEx Bold Oblique** for display text (turn number, gear, speed, lap times, delta; was Futura until 2026-10-03, see *Fonts on the tablet*); **Oswald Bold** (fat, condensed) for labels and data so small text stays legible. `8A`, `18`, and `287` checked to fit. |
 | Glow | none | **off** since 2026-10-03: WPF blur is GPU shader work, and a GPU driver hang on the test PC followed launching the dash as a local window. `dashlib.glow` remains available (`GLOW` > 0) |
 | Trace width | 3 px | 4 px |
 | Accents | none | angled lime stripes in the top and status bars |
@@ -134,7 +134,7 @@ This theme deliberately relaxes the *Avoid* list above (glows, more than one acc
 - **Background art:** the carbon weave, acid-lime angular wedges sweeping in from both top corners with black pinstripe cuts, a neon-magenta paint splatter in the bottom-right corner, and a small lime splatter bottom-left. It's a static image, so no GPU effects. (White paint drips were tried and dropped on 2026-10-03: barely visible behind the panels.)
 - **Panels:** near-opaque (`#F5060606`), so the art shows fully in the gaps and edges but never crosses the data.
 - **Palette:** black, white, livery lime `#A8F000` (accents, labels, gear, throttle), neon magenta `#FF1ED2` (the corner you're in, its band, your car on the map, the splatter; replaced orange on 2026-10-03 to move away from a brand's signature colour), white steering trace, yellow TC, cyan ABS.
-- **Type:** **Eurostar Black Extended**, a squared, extended race-number face, for the turn number (92 px), gear, and speed; Futura Bold for times and headers; Oswald Bold for labels and data. All three ship with SimHub.
+- **Type:** **EurasiaEx Bold**, a fat, wide sans, for the turn number (92 px), gear (120), speed (50), lap times, delta and temperatures; **Oswald Bold** for labels and data. (Eurostar Black Extended and Futura were used until 2026-10-03; see *Fonts on the tablet*.)
 
 
 ## Car and conditions indicators (2026-10-03, all themes)
@@ -169,3 +169,19 @@ The lap cursor is white. Microsectors were tried and dropped the same day: other
 Each turn with a track-limits excursion gets a red bar along the foot of its band: bright red for this lap, dim red for earlier laps this session. Its turn number turns red for an excursion this lap (unless it's the turn you're in, which stays blue). `TRACK LIMITS n` (session total) appears in red beside the strip title once there's one. Red is the warning colour (as brake), separate from the pace colours and the "you" blue.
 
 In an ACC race the game reports no track-limit information at all, so the strip shows `TRACK LIMITS N/A IN RACE` (muted) instead of a count; sectors are still rated, but can't be marked red there. ACC practice/qualifying (lap invalidation) and AC (tyres out) are unaffected.
+
+## Fonts on the tablet (2026-10-03)
+
+Dash Studio (WPF) finds a font by the family name inside the font file, but SimHub's web client (the tablet) only knows the families declared in `SimHub\Web\FontFaces.css`. It falls back to the browser's default **serif** for anything else. Read from the files' name tables (nameID 1):
+
+| Font used | File family | In FontFaces.css | Result |
+| --- | --- | --- | --- |
+| `Futura` (Bold) | `futurab.ttf` is **"Futura Md BT"** | no (registered as "Futura Md BT") | **failed**: serif on the tablet |
+| `Eurostar Black Extended` | `eurostarblackextended.ttf` is "Eurostar Black Extended" | no (registered as "Eurostar") | **failed**: serif on the tablet |
+| `Oswald` (Bold) | `Oswald-Bold.ttf` is "Oswald" | yes (weights 200–700) | passes |
+| `EurasiaEx` (Bold) | `EurasiaEx-Bold.ttf` is "EurasiaEx" | yes (400, bold) | passes: **replacement** for both failures |
+| `DIN 1451 Std Mittelschrift` (classic) | same | yes | passes |
+
+EurasiaEx has no `−` (U+2212), `▲`, `▼` or `×`. The dashboard only shows `°` in EurasiaEx; the `−6 s` axis label is in Oswald, which has it. Because EurasiaEx is much wider, display sizes are theme tokens, cut for Neon/Livery: lap time and best 32, delta 30, gear 120, speed 50, RPM 26, air/track 34, flag 16. These were checked against worst cases (`10:59.999`, `+12.34`, `10500`, `104°F`, `CHEQUERED`) with `fontcheck.text_width`.
+
+**Guard:** `tools/build_dash.py` runs `tools/fontcheck.py` on every build. It fails if any item's font isn't both a DashFonts family and a FontFaces.css family, or lacks a glyph for text it shows. `tools/preview_dash.py` now loads fonts the way the web client does (FontFaces.css only, serif fallback), so previews show the tablet's real result.

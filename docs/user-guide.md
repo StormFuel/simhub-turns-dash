@@ -2,7 +2,7 @@
 
 Turn Telemetry is a SimHub plugin with a 1920×1080 dashboard for a tablet or second screen. It shows your telemetry turn by turn: which corner you're at, how each sector compares, where you exceeded track limits, and your inputs and tyres.
 
-![Turn Telemetry Dashboard in ACC at Brands Hatch](images/screenshot-dashboard.png)
+![Turn Telemetry Dashboard in ACC at Monza](images/screenshot-dashboard.png)
 
 ## Install
 
