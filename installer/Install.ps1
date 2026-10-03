@@ -13,10 +13,14 @@
 
 .PARAMETER Uninstall
     Remove the plugin DLLs and the dashboard instead.
+
+.PARAMETER NoPrompt
+    Unattended: never ask; stop if SimHub is running; don't start SimHub afterwards.
 #>
 param(
     [string]$SimHubDir,
-    [switch]$Uninstall
+    [switch]$Uninstall,
+    [switch]$NoPrompt
 )
 
 $ErrorActionPreference = 'Stop'
@@ -50,6 +54,7 @@ function Test-Writable([string]$dir) {
 
 function Wait-SimHubClosed {
     if (-not (Get-Process SimHubWPF -ErrorAction SilentlyContinue)) { return }
+    if ($NoPrompt) { Write-Host 'SimHub is running; close it and run again.' -ForegroundColor Red; exit 1 }
     Write-Host ''
     Write-Host 'SimHub is running. It locks plugin files, so it must be closed first.' -ForegroundColor Yellow
     $answer = Read-Host 'Close SimHub now? [Y/n]'
@@ -94,6 +99,7 @@ if (-not (Test-Writable $simhub)) {
     Write-Host 'The SimHub folder needs administrator rights; asking Windows for permission...'
     $relaunch = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$($MyInvocation.MyCommand.Path)`"", '-SimHubDir', "`"$simhub`"")
     if ($Uninstall) { $relaunch += '-Uninstall' }
+    if ($NoPrompt) { $relaunch += '-NoPrompt' }
     Start-Process powershell -Verb RunAs -ArgumentList $relaunch -Wait
     exit 0
 }
@@ -130,5 +136,7 @@ Write-Host '  1. Start SimHub. When it asks whether to enable "Turn Telemetry", 
 Write-Host '  2. Dash Studio: pick "Turn Telemetry Dashboard" for your tablet / second screen'
 Write-Host '     (or open http://<this-pc-ip>:8888 on the tablet).'
 Write-Host ''
-$answer = Read-Host 'Start SimHub now? [Y/n]'
-if ($answer -eq '' -or $answer -match '^[Yy]') { Start-Process (Join-Path $simhub 'SimHubWPF.exe') }
+if (-not $NoPrompt) {
+    $answer = Read-Host 'Start SimHub now? [Y/n]'
+    if ($answer -eq '' -or $answer -match '^[Yy]') { Start-Process (Join-Path $simhub 'SimHubWPF.exe') }
+}
