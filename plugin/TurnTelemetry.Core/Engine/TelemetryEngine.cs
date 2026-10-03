@@ -115,6 +115,51 @@ namespace TurnTelemetry.Core.Engine
         private int _loggedIncidents;
         private string _loggedRating;
         private string _loggedTurns;
+        private string _sessionChange;
+        private int _offPeak;
+        private double _offPos;
+        private double _offEnded = double.NaN;
+
+        /// <summary>Back on track for this long before an off-track moment is logged (kerb hopping is one entry).</summary>
+        private const double OffLogSettleSeconds = 0.5;
+
+        /// <summary>
+        /// Logs every moment with any tyres off track (peak count, where, and whether it reached the limit), so a
+        /// report shows near misses too: "I went over at T3 but it didn't count" is then answerable.
+        /// </summary>
+        private void LogTyresOff(double lapPos, double now)
+        {
+            var off = TyresOut ?? 0;
+            if (off > 0)
+            {
+                if (_offPeak == 0) _offPos = lapPos;
+                if (off > _offPeak) _offPeak = off;
+                _offEnded = double.NaN;
+                return;
+            }
+            if (_offPeak == 0) return;
+            if (double.IsNaN(_offEnded)) { _offEnded = now; return; }
+            if (now - _offEnded < OffLogSettleSeconds) return;
+            var limit = Adapter.Capabilities.TyresOutLimit;
+            var turn = TrackLimits.Nearest(Catalog.Turns, _offPos);
+            Log.Add($"tyres off track: peak {_offPeak} at {_offPos:0.000} (near T{turn?.Label ?? "?"})  " +
+                    (_offPeak >= limit ? "counted" : $"below the {limit}-tyre limit, not counted"));
+            _offPeak = 0;
+            _offEnded = double.NaN;
+        }
+
+        private static readonly string[] SessionKeyNames = { "game", "track", "car", "session type", "session id" };
+
+        /// <summary>Which part of the session key changed, so the event log shows why a session (re)started.</summary>
+        private static string SessionChange(string previousKey, string[] parts)
+        {
+            if (previousKey == null) return "first session";
+            var old = previousKey.Split('|');
+            var changed = Enumerable.Range(0, parts.Length)
+                .Where(i => i >= old.Length || old[i] != (parts[i] ?? ""))
+                .Select(i => $"{SessionKeyNames[i]} '{(i < old.Length ? old[i] : "")}' -> '{parts[i]}'");
+            return "changed: " + string.Join(", ", changed);
+        }
 
         /// <summary>Standings window for the dashboard; the host feeds it from SimHub's opponent list.</summary>
         public StandingsBoard Standings { get; } = new StandingsBoard();
@@ -163,9 +208,11 @@ namespace TurnTelemetry.Core.Engine
                 _snapshot = s;
                 _raw = raw;
 
-                var key = string.Join("|", s.GameName, s.TrackIdWithConfig, s.CarId, s.SessionTypeName, s.SessionId);
+                var parts = new[] { s.GameName, s.TrackIdWithConfig, s.CarId, s.SessionTypeName, s.SessionId.ToString() };
+                var key = string.Join("|", parts);
                 if (key != _sessionKey)
                 {
+                    _sessionChange = SessionChange(_sessionKey, parts);
                     _sessionKey = key;
                     StartSession(s, raw);
                 }
@@ -197,6 +244,7 @@ namespace TurnTelemetry.Core.Engine
                     ReadTyresOut(raw);
                     Limits.Update(Laps.Current, Catalog.Turns, frame.LapPos, TyresOut, Adapter.Capabilities.TyresOutLimit,
                         frame.LapInvalidated, frame.CurrentLapTime.TotalSeconds, now);
+                    LogTyresOff(frame.LapPos, now);
                     if (Limits.Incidents != _loggedIncidents)
                     {
                         _loggedIncidents = Limits.Incidents;
@@ -214,7 +262,7 @@ namespace TurnTelemetry.Core.Engine
                     if (SectorTimes.LastRating != _loggedRating)
                     {
                         _loggedRating = SectorTimes.LastRating;
-                        Log.Add("sector " + _loggedRating);
+                        if (SectorTimes.HasRating) Log.Add("sector " + _loggedRating);
                     }
                 }
             }
@@ -225,7 +273,7 @@ namespace TurnTelemetry.Core.Engine
             GameName = s.GameName;
             TrackKeyId = string.IsNullOrEmpty(s.TrackIdWithConfig) ? s.TrackId : s.TrackIdWithConfig;
             Adapter = SimAdapters.For(s.GameName, _adapters);
-            Log.Add($"session: {s.GameName}  track={TrackKeyId}  car={s.CarModel ?? s.CarId}  type={s.SessionTypeName}  adapter={Adapter.Id}");
+            Log.Add($"session: {s.GameName}  track={TrackKeyId}  car={s.CarModel ?? s.CarId}  type={s.SessionTypeName}  adapter={Adapter.Id}  ({_sessionChange})");
             _loggedIncidents = 0;
             _loggedRating = null;
             _loggedTurns = null;

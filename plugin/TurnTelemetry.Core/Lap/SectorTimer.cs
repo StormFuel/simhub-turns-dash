@@ -55,6 +55,7 @@ namespace TurnTelemetry.Core.Lap
 
         /// <summary>The last rating and what it was based on, for the settings-tab diagnostics.</summary>
         public string LastRating { get; private set; } = "none yet";
+        public bool HasRating => LastRating != "none yet";
 
         public SectorTimer()
         {

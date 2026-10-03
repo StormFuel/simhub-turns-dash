@@ -33,6 +33,7 @@ Uninstall with `Uninstall.cmd`. If you'd rather install by hand, the [user guide
 ### Known limits
 
 - **ACC races:** ACC reports nothing about track limits in races, so the dashboard shows *TRACK LIMITS N/A IN RACE*. ACC practice/qualifying and AC work.
+- **AC track limits follow each track's surface data:** some tracks (e.g. Laguna Seca) mark gravel and sand as valid track, so running wide there isn't detected.
 - **TC cut, wipers, lights:** ACC only; other sims show N/A.
 - **Sectors:** appear after you've crossed each sector line once on a new track.
 

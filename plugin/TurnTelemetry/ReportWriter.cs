@@ -36,6 +36,12 @@ namespace TurnTelemetryHost
             report.AppendLine();
             report.AppendLine("What happened (please describe it in your issue or post, with the time it happened).");
             report.AppendLine();
+            if (e.GameName == null)
+            {
+                report.AppendLine("NOTE: no game session was running. Reports are most useful saved while driving, or right");
+                report.AppendLine("after the problem (before closing the game or SimHub).");
+                report.AppendLine();
+            }
             report.AppendLine("=== Live diagnostics ===");
             report.AppendLine(SettingsControl.Diagnostics(e));
             report.AppendLine("=== Recent events (oldest first) ===");
@@ -67,12 +73,29 @@ namespace TurnTelemetryHost
             if (!string.IsNullOrEmpty(path) && File.Exists(path)) Add(zip, name, File.ReadAllText(path));
         }
 
+        /// <summary>
+        /// SimHub's files are all stamped 1.0.0.0, so the real version (e.g. 9.12.9) comes from its entry in Windows'
+        /// installed programs; the SimHub.Plugins build stamp is the fallback.
+        /// </summary>
         private static string SimHubVersion()
         {
             try
             {
-                var exe = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SimHubWPF.exe");
-                return File.Exists(exe) ? FileVersionInfo.GetVersionInfo(exe).FileVersion : "unknown";
+                foreach (var hive in new[] { Microsoft.Win32.Registry.LocalMachine, Microsoft.Win32.Registry.CurrentUser })
+                foreach (var root in new[] { @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall",
+                                             @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" })
+                using (var uninstall = hive.OpenSubKey(root))
+                {
+                    if (uninstall == null) continue;
+                    foreach (var name in uninstall.GetSubKeyNames())
+                    using (var app = uninstall.OpenSubKey(name))
+                    {
+                        var display = app?.GetValue("DisplayName") as string;
+                        if (display != null && display.StartsWith("SimHub version", StringComparison.OrdinalIgnoreCase))
+                            return app.GetValue("DisplayVersion") as string ?? display;
+                    }
+                }
+                return "build " + typeof(SimHub.Plugins.PluginManager).Assembly.GetName().Version;
             }
             catch (Exception) { return "unknown"; }
         }

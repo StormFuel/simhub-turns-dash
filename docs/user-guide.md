@@ -68,7 +68,7 @@ Each excursion is pinned to the nearest corner. That corner's band gets a **red 
 
 | Sim | How it's detected |
 | --- | --- |
-| Assetto Corsa | The game's tyres-off-track count: 3 or more tyres off. Every excursion is counted |
+| Assetto Corsa | The game's tyres-off-track count: 3 or more tyres off. Every excursion is counted, **as the track defines it**: each AC track's `data/surfaces.ini` says which surfaces are valid track. Some tracks mark run-off as valid track (Laguna Seca, Kunos and mod versions, marks gravel and sand as valid), so running wide there isn't counted by AC or the dashboard |
 | ACC practice / qualifying | When the game invalidates the lap. Only the **first** offence per lap is counted |
 | **ACC race** | **Not available.** ACC reports nothing for track limits in races: its tyres-out value is always 0 and laps aren't invalidated. The strip shows **TRACK LIMITS N/A IN RACE** |
 | Other sims | When the sim invalidates the lap, if it reports that |
