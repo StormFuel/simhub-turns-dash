@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "mugello",
+  "trackName": "Autodromo Internazionale del Mugello",
+  "lengthMeters": 5200,
+  "source": "official numbering (https://www.about-mugello-travel-guide.com/mugello-circuit/the-15-turns/turn-15-bucine.html (15 numbered turns); https://en.wikipedia.org/wiki/Mugello_Circuit); positions from SimHub map mugello.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "San Donato",
+      "start": 0.1178,
+      "end": 0.1681
+    },
+    {
+      "label": "2",
+      "name": "Luco",
+      "start": 0.1705,
+      "end": 0.1943
+    },
+    {
+      "label": "3",
+      "name": "Poggio Secco",
+      "start": 0.1955,
+      "end": 0.2257
+    },
+    {
+      "label": "4",
+      "name": "Materassi",
+      "start": 0.2757,
+      "end": 0.296
+    },
+    {
+      "label": "5",
+      "name": "Borgo San Lorenzo",
+      "start": 0.2972,
+      "end": 0.3253
+    },
+    {
+      "label": "6",
+      "name": "Casanova",
+      "start": 0.363,
+      "end": 0.3868
+    },
+    {
+      "label": "7",
+      "name": "Savelli",
+      "start": 0.3887,
+      "end": 0.4269
+    },
+    {
+      "label": "8",
+      "name": "Arrabbiata 1",
+      "start": 0.4365,
+      "end": 0.4876
+    },
+    {
+      "label": "9",
+      "name": "Arrabbiata 2",
+      "start": 0.488,
+      "end": 0.534
+    },
+    {
+      "label": "10",
+      "name": "Scarperia",
+      "start": 0.5675,
+      "end": 0.5941
+    },
+    {
+      "label": "11",
+      "name": "Palagio",
+      "start": 0.5961,
+      "end": 0.626
+    },
+    {
+      "label": "12",
+      "name": "Correntaio",
+      "start": 0.6679,
+      "end": 0.7274
+    },
+    {
+      "label": "13",
+      "name": "Biondetti 1",
+      "start": 0.7289,
+      "end": 0.7522
+    },
+    {
+      "label": "14",
+      "name": "Biondetti 2",
+      "start": 0.7541,
+      "end": 0.777
+    },
+    {
+      "label": "15",
+      "name": "Bucine",
+      "start": 0.8328,
+      "end": 0.9113
+    }
+  ]
+}

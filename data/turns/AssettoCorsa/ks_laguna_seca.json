@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "ks_laguna_seca",
+  "trackName": "WeatherTech Raceway Laguna Seca",
+  "lengthMeters": 3558,
+  "source": "official numbering (https://en.wikipedia.org/wiki/Laguna_Seca (Corkscrew = turns 8 and 8A); http://trackpedia.racetrackdriving.com/wiki/Turn_by_turn_guide_to_the_Laguna_Seca_track (turn 7 right kink before the Corkscrew)); positions from SimHub map ks_laguna_seca-3558.31567382813.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Turn 1",
+      "start": 0.0485,
+      "end": 0.0913
+    },
+    {
+      "label": "2",
+      "name": "Andretti Hairpin",
+      "start": 0.1003,
+      "end": 0.1644
+    },
+    {
+      "label": "3",
+      "name": "Turn 3",
+      "start": 0.1694,
+      "end": 0.2412
+    },
+    {
+      "label": "4",
+      "name": "Turn 4",
+      "start": 0.2688,
+      "end": 0.3652
+    },
+    {
+      "label": "5",
+      "name": "Turn 5",
+      "start": 0.4039,
+      "end": 0.4619
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "start": 0.5204,
+      "end": 0.5961
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "start": 0.641,
+      "end": 0.671
+    },
+    {
+      "label": "8",
+      "name": "The Corkscrew",
+      "start": 0.674,
+      "end": 0.692
+    },
+    {
+      "label": "8A",
+      "name": "The Corkscrew",
+      "start": 0.6931,
+      "end": 0.7211
+    },
+    {
+      "label": "9",
+      "name": "Rainey Curve",
+      "start": 0.724,
+      "end": 0.7944
+    },
+    {
+      "label": "10",
+      "name": "Turn 10",
+      "start": 0.8001,
+      "end": 0.8624
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "start": 0.8984,
+      "end": 0.9295
+    }
+  ]
+}

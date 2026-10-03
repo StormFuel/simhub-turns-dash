@@ -1,0 +1,23 @@
+{
+  "Title": "Turn Telemetry Dashboard",
+  "Description": "Turn-by-turn telemetry: turns and sectors this lap, standings, live inputs, tyres (needs the Turn Telemetry plugin)",
+  "Author": "StormFuel",
+  "ScreenCount": 1.0,
+  "InGameScreensIndexs": [
+    0
+  ],
+  "IdleScreensIndexs": [
+    0
+  ],
+  "PitScreensIndexs": [],
+  "MainPreviewIndex": 0,
+  "IsOverlay": false,
+  "OverlaySizeWarning": true,
+  "MetadataVersion": 2.0,
+  "EnableOnDashboardMessaging": true,
+  "PreferredTouchMode": 0,
+  "SimHubVersion": "9.12.8",
+  "Width": 1920.0,
+  "Height": 1080.0,
+  "DashboardVersion": "0.2.0"
+}

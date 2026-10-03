@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsaCompetizione",
+  "track": "Silverstone",
+  "trackName": "Silverstone Grand Prix Circuit",
+  "lengthMeters": 5792,
+  "source": "official numbering (https://en.wikipedia.org/wiki/Silverstone_Circuit (18 turns; Maggotts-Becketts 10-13 left-right-left-right, Chapel 14, Club 17-18)); positions from SimHub map Silverstone-5891.shtl",
+  "turns": [
+    {
+      "label": "9",
+      "name": "Copse",
+      "start": 0.0227,
+      "end": 0.0739
+    },
+    {
+      "label": "10",
+      "name": "Maggotts",
+      "start": 0.11,
+      "end": 0.137
+    },
+    {
+      "label": "11",
+      "name": "Becketts",
+      "start": 0.1386,
+      "end": 0.1631
+    },
+    {
+      "label": "12",
+      "name": "Becketts",
+      "start": 0.1651,
+      "end": 0.1868
+    },
+    {
+      "label": "13",
+      "name": "Becketts",
+      "start": 0.1882,
+      "end": 0.2192
+    },
+    {
+      "label": "14",
+      "name": "Chapel",
+      "start": 0.2216,
+      "end": 0.2457
+    },
+    {
+      "label": "15",
+      "name": "Stowe",
+      "start": 0.3504,
+      "end": 0.4012
+    },
+    {
+      "label": "16",
+      "name": "Vale",
+      "start": 0.4453,
+      "end": 0.4609
+    },
+    {
+      "label": "17",
+      "name": "Club",
+      "start": 0.462,
+      "end": 0.479
+    },
+    {
+      "label": "18",
+      "name": "Club",
+      "start": 0.479,
+      "end": 0.515
+    },
+    {
+      "label": "1",
+      "name": "Abbey",
+      "start": 0.5705,
+      "end": 0.6085
+    },
+    {
+      "label": "2",
+      "name": "Farm",
+      "start": 0.6106,
+      "end": 0.6482
+    },
+    {
+      "label": "3",
+      "name": "Village",
+      "start": 0.6534,
+      "end": 0.6832
+    },
+    {
+      "label": "4",
+      "name": "The Loop",
+      "start": 0.686,
+      "end": 0.712
+    },
+    {
+      "label": "5",
+      "name": "Aintree",
+      "start": 0.712,
+      "end": 0.747
+    },
+    {
+      "label": "6",
+      "name": "Brooklands",
+      "start": 0.8285,
+      "end": 0.8693
+    },
+    {
+      "label": "7",
+      "name": "Luffield",
+      "start": 0.871,
+      "end": 0.917
+    },
+    {
+      "label": "8",
+      "name": "Woodcote",
+      "start": 0.917,
+      "end": 0.975
+    }
+  ]
+}

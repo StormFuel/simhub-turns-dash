@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Thin SimHub host: maps GameData to the Core engine and publishes TurnTelemetry.* properties. -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>TurnTelemetry</AssemblyName>
+    <RootNamespace>TurnTelemetryHost</RootNamespace>
+    <!-- Copy the plugin into SimHub after a build: dotnet build -c Release -p:Deploy=true (close SimHub first when updating). -->
+    <Deploy Condition="'$(Deploy)' == ''">false</Deploy>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="SimHub.Plugins"><HintPath>$(SimHubDir)\SimHub.Plugins.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="GameReaderCommon"><HintPath>$(SimHubDir)\GameReaderCommon.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SimHub.Logging"><HintPath>$(SimHubDir)\SimHub.Logging.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="log4net"><HintPath>$(SimHubDir)\log4net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(SimHubDir)\Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TurnTelemetry.Core\TurnTelemetry.Core.csproj" />
+  </ItemGroup>
+
+  <Target Name="DeployToSimHub" AfterTargets="Build" Condition="'$(Deploy)' == 'true'">
+    <Copy SourceFiles="$(OutDir)TurnTelemetry.dll;$(OutDir)TurnTelemetry.Core.dll;$(OutDir)TurnTelemetry.pdb;$(OutDir)TurnTelemetry.Core.pdb"
+          DestinationFolder="$(SimHubDir)" SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="Deployed Turn Telemetry to $(SimHubDir). Restart SimHub to load it." />
+  </Target>
+
+</Project>

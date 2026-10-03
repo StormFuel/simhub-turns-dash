@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "id": "barcelona-2007",
+  "circuit": "Circuit de Barcelona-Catalunya (2007-2020 layout, with chicane)",
+  "lengthMeters": 4591,
+  "reference": "AssettoCorsa/ks_barcelona-layout_gp",
+  "source": "official numbering (https://en.wikipedia.org/wiki/Circuit_de_Barcelona-Catalunya (2007-2020 layout: 16 turns; 2021+ without chicane: 14); https://www.total-motorsport.com/barcelona-gp-corner-names-circuit-de-barcelona-catalunya/; AC ks_barcelona sections.ini corner names); positions from SimHub map ks_barcelona-layout_gp-4591.30908203125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Elf",
+      "dir": "R",
+      "deg": 81,
+      "start": 0.1717,
+      "end": 0.1979,
+      "mid": 0.1848
+    },
+    {
+      "label": "2",
+      "name": "Elf",
+      "dir": "L",
+      "deg": 63,
+      "start": 0.1992,
+      "end": 0.2238,
+      "mid": 0.2115
+    },
+    {
+      "label": "3",
+      "name": "Renault",
+      "dir": "R",
+      "deg": 159,
+      "start": 0.226,
+      "end": 0.3236,
+      "mid": 0.2748
+    },
+    {
+      "label": "4",
+      "name": "Repsol",
+      "dir": "R",
+      "deg": 183,
+      "start": 0.3576,
+      "end": 0.428,
+      "mid": 0.3928
+    },
+    {
+      "label": "5",
+      "name": "Seat",
+      "dir": "L",
+      "deg": 147,
+      "start": 0.4459,
+      "end": 0.4815,
+      "mid": 0.4637
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "dir": "L",
+      "deg": 31,
+      "start": 0.498,
+      "end": 0.54,
+      "mid": 0.519
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "dir": "L",
+      "deg": 85,
+      "start": 0.54,
+      "end": 0.568,
+      "mid": 0.554
+    },
+    {
+      "label": "8",
+      "name": "Turn 8",
+      "dir": "R",
+      "deg": 26,
+      "start": 0.569,
+      "end": 0.5904,
+      "mid": 0.5797
+    },
+    {
+      "label": "9",
+      "name": "Campsa",
+      "dir": "R",
+      "deg": 86,
+      "start": 0.6092,
+      "end": 0.6577,
+      "mid": 0.6334
+    },
+    {
+      "label": "10",
+      "name": "La Caixa",
+      "dir": "L",
+      "deg": 144,
+      "start": 0.744,
+      "end": 0.7731,
+      "mid": 0.7586
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "dir": "L",
+      "deg": 39,
+      "start": 0.7735,
+      "end": 0.7935,
+      "mid": 0.7835
+    },
+    {
+      "label": "12",
+      "name": "Banc Sabadell",
+      "dir": "R",
+      "deg": 171,
+      "start": 0.7948,
+      "end": 0.8416,
+      "mid": 0.8182
+    },
+    {
+      "label": "13",
+      "name": "Europcar",
+      "dir": "R",
+      "deg": 82,
+      "start": 0.8564,
+      "end": 0.8831,
+      "mid": 0.8698
+    },
+    {
+      "label": "14",
+      "name": "Chicane",
+      "dir": "L",
+      "deg": 74,
+      "start": 0.8853,
+      "end": 0.9012,
+      "mid": 0.8932
+    },
+    {
+      "label": "15",
+      "name": "Chicane",
+      "dir": "R",
+      "deg": 63,
+      "start": 0.9021,
+      "end": 0.9164,
+      "mid": 0.9093
+    },
+    {
+      "label": "16",
+      "name": "New Holland",
+      "dir": "R",
+      "deg": 90,
+      "start": 0.9168,
+      "end": 0.9656,
+      "mid": 0.9412
+    }
+  ]
+}

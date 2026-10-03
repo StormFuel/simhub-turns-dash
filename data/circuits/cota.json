@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "id": "cota",
+  "circuit": "Circuit of the Americas",
+  "lengthMeters": 5428,
+  "reference": "AssettoCorsa/acu_unitedstates-a",
+  "source": "official numbering (AC acu_unitedstates/a/data/sections.ini (Turn 1-20); https://en.wikipedia.org/wiki/Circuit_of_the_Americas (20 turns)); positions from SimHub map acu_unitedstates-a-5411.17626953125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Turn 1",
+      "dir": "L",
+      "deg": 139,
+      "start": 0.112,
+      "end": 0.131,
+      "mid": 0.1215
+    },
+    {
+      "label": "2",
+      "name": "Turn 2",
+      "dir": "R",
+      "deg": 69,
+      "start": 0.149,
+      "end": 0.182,
+      "mid": 0.1655
+    },
+    {
+      "label": "3",
+      "name": "Turn 3",
+      "dir": "L",
+      "deg": 16,
+      "start": 0.208,
+      "end": 0.22,
+      "mid": 0.214
+    },
+    {
+      "label": "4",
+      "name": "Turn 4",
+      "dir": "R",
+      "deg": 23,
+      "start": 0.225,
+      "end": 0.239,
+      "mid": 0.232
+    },
+    {
+      "label": "5",
+      "name": "Turn 5",
+      "dir": "L",
+      "deg": 32,
+      "start": 0.242,
+      "end": 0.255,
+      "mid": 0.2485
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "dir": "R",
+      "deg": 94,
+      "start": 0.263,
+      "end": 0.298,
+      "mid": 0.2805
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "dir": "L",
+      "deg": 24,
+      "start": 0.311,
+      "end": 0.317,
+      "mid": 0.314
+    },
+    {
+      "label": "8",
+      "name": "Turn 8",
+      "dir": "R",
+      "deg": 76,
+      "start": 0.338,
+      "end": 0.353,
+      "mid": 0.3455
+    },
+    {
+      "label": "9",
+      "name": "Turn 9",
+      "dir": "L",
+      "deg": 33,
+      "start": 0.356,
+      "end": 0.364,
+      "mid": 0.36
+    },
+    {
+      "label": "10",
+      "name": "Turn 10",
+      "dir": "L",
+      "deg": 11,
+      "start": 0.393,
+      "end": 0.4,
+      "mid": 0.3965
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "dir": "L",
+      "deg": 123,
+      "start": 0.463,
+      "end": 0.476,
+      "mid": 0.4695
+    },
+    {
+      "label": "12",
+      "name": "Turn 12",
+      "dir": "L",
+      "deg": 123,
+      "start": 0.682,
+      "end": 0.7,
+      "mid": 0.691
+    },
+    {
+      "label": "13",
+      "name": "Turn 13",
+      "dir": "R",
+      "deg": 88,
+      "start": 0.723,
+      "end": 0.735,
+      "mid": 0.729
+    },
+    {
+      "label": "14",
+      "name": "Turn 14",
+      "dir": "R",
+      "deg": 49,
+      "start": 0.74,
+      "end": 0.752,
+      "mid": 0.746
+    },
+    {
+      "label": "15",
+      "name": "Turn 15",
+      "dir": "L",
+      "deg": 129,
+      "start": 0.775,
+      "end": 0.789,
+      "mid": 0.782
+    },
+    {
+      "label": "16",
+      "name": "Turn 16",
+      "dir": "R",
+      "deg": 29,
+      "start": 0.813,
+      "end": 0.825,
+      "mid": 0.819
+    },
+    {
+      "label": "17",
+      "name": "Turn 17",
+      "dir": "R",
+      "deg": 20,
+      "start": 0.835,
+      "end": 0.842,
+      "mid": 0.8385
+    },
+    {
+      "label": "18",
+      "name": "Turn 18",
+      "dir": "R",
+      "deg": 49,
+      "start": 0.855,
+      "end": 0.879,
+      "mid": 0.867
+    },
+    {
+      "label": "19",
+      "name": "Turn 19",
+      "dir": "L",
+      "deg": 62,
+      "start": 0.914,
+      "end": 0.931,
+      "mid": 0.9225
+    },
+    {
+      "label": "20",
+      "name": "Turn 20",
+      "dir": "L",
+      "deg": 108,
+      "start": 0.965,
+      "end": 0.982,
+      "mid": 0.9735
+    }
+  ]
+}

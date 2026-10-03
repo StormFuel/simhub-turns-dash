@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "ks_silverstone-gp",
+  "trackName": "Silverstone Grand Prix Circuit",
+  "lengthMeters": 5807,
+  "source": "official numbering (https://en.wikipedia.org/wiki/Silverstone_Circuit (18 turns; Maggotts-Becketts 10-13 left-right-left-right, Chapel 14, Club 17-18); AC ks_silverstone/gp/data/sections.ini corner names); positions from SimHub map ks_silverstone-gp-5802.10009765625.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Abbey",
+      "start": 0.037,
+      "end": 0.0677
+    },
+    {
+      "label": "2",
+      "name": "Farm",
+      "start": 0.0715,
+      "end": 0.1063
+    },
+    {
+      "label": "3",
+      "name": "Village",
+      "start": 0.1184,
+      "end": 0.1448
+    },
+    {
+      "label": "4",
+      "name": "The Loop",
+      "start": 0.1459,
+      "end": 0.1817
+    },
+    {
+      "label": "5",
+      "name": "Aintree",
+      "start": 0.182,
+      "end": 0.2084
+    },
+    {
+      "label": "6",
+      "name": "Brooklands",
+      "start": 0.2974,
+      "end": 0.3319
+    },
+    {
+      "label": "7",
+      "name": "Luffield",
+      "start": 0.3333,
+      "end": 0.3751
+    },
+    {
+      "label": "8",
+      "name": "Woodcote",
+      "start": 0.3834,
+      "end": 0.4352
+    },
+    {
+      "label": "9",
+      "name": "Copse",
+      "start": 0.4872,
+      "end": 0.5273
+    },
+    {
+      "label": "10",
+      "name": "Maggotts",
+      "start": 0.576,
+      "end": 0.6
+    },
+    {
+      "label": "11",
+      "name": "Becketts",
+      "start": 0.6029,
+      "end": 0.6242
+    },
+    {
+      "label": "12",
+      "name": "Becketts",
+      "start": 0.6269,
+      "end": 0.6494
+    },
+    {
+      "label": "13",
+      "name": "Becketts",
+      "start": 0.6508,
+      "end": 0.6791
+    },
+    {
+      "label": "14",
+      "name": "Chapel",
+      "start": 0.6816,
+      "end": 0.7058
+    },
+    {
+      "label": "15",
+      "name": "Stowe",
+      "start": 0.8165,
+      "end": 0.8623
+    },
+    {
+      "label": "16",
+      "name": "Vale",
+      "start": 0.9096,
+      "end": 0.924
+    },
+    {
+      "label": "17",
+      "name": "Club",
+      "start": 0.925,
+      "end": 0.947
+    },
+    {
+      "label": "18",
+      "name": "Club",
+      "start": 0.947,
+      "end": 0.976
+    }
+  ]
+}

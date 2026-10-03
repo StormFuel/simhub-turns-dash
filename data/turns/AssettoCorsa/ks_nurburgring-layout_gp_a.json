@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "ks_nurburgring-layout_gp_a",
+  "trackName": "Nürburgring GP-Strecke",
+  "lengthMeters": 5075,
+  "source": "official numbering (https://coachdaveacademy.com/tutorials/nurburgring-grand-prix-circuit-track-guide/ (15 turns with directions)); positions from SimHub map ks_nurburgring-layout_gp_a-5077.35205078125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Castrol-S",
+      "start": 0.1155,
+      "end": 0.1447
+    },
+    {
+      "label": "2",
+      "name": "Mercedes Arena",
+      "start": 0.1471,
+      "end": 0.1925
+    },
+    {
+      "label": "3",
+      "name": "Mercedes Arena",
+      "start": 0.1929,
+      "end": 0.2261
+    },
+    {
+      "label": "4",
+      "name": "Mercedes Arena",
+      "start": 0.2269,
+      "end": 0.2515
+    },
+    {
+      "label": "5",
+      "name": "Valvoline-Kurve",
+      "start": 0.3138,
+      "end": 0.3461
+    },
+    {
+      "label": "6",
+      "name": "Ford-Kurve",
+      "start": 0.3485,
+      "end": 0.3796
+    },
+    {
+      "label": "7",
+      "name": "Dunlop-Kehre",
+      "start": 0.4632,
+      "end": 0.5022
+    },
+    {
+      "label": "8",
+      "name": "Michael Schumacher S",
+      "start": 0.5397,
+      "end": 0.5713
+    },
+    {
+      "label": "9",
+      "name": "Michael Schumacher S",
+      "start": 0.5737,
+      "end": 0.5982
+    },
+    {
+      "label": "10",
+      "name": "Kumho-Kurve",
+      "start": 0.6538,
+      "end": 0.6829
+    },
+    {
+      "label": "11",
+      "name": "Bit-Kurve",
+      "start": 0.6865,
+      "end": 0.7275
+    },
+    {
+      "label": "12",
+      "name": "ADVAN-Bogen",
+      "start": 0.7756,
+      "end": 0.813
+    },
+    {
+      "label": "13",
+      "name": "Veedol-Schikane",
+      "start": 0.8735,
+      "end": 0.8865
+    },
+    {
+      "label": "14",
+      "name": "Veedol-Schikane",
+      "start": 0.8869,
+      "end": 0.9096
+    },
+    {
+      "label": "15",
+      "name": "Coca-Cola-Kurve",
+      "start": 0.9285,
+      "end": 0.97
+    }
+  ]
+}

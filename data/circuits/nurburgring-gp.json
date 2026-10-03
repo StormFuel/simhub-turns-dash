@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "id": "nurburgring-gp",
+  "circuit": "Nürburgring GP-Strecke",
+  "lengthMeters": 5075,
+  "reference": "AssettoCorsa/ks_nurburgring-layout_gp_a",
+  "source": "official numbering (https://coachdaveacademy.com/tutorials/nurburgring-grand-prix-circuit-track-guide/ (15 turns with directions)); positions from SimHub map ks_nurburgring-layout_gp_a-5077.35205078125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Castrol-S",
+      "dir": "R",
+      "deg": 159,
+      "start": 0.1155,
+      "end": 0.1447,
+      "mid": 0.1301
+    },
+    {
+      "label": "2",
+      "name": "Mercedes Arena",
+      "dir": "L",
+      "deg": 137,
+      "start": 0.1471,
+      "end": 0.1925,
+      "mid": 0.1698
+    },
+    {
+      "label": "3",
+      "name": "Mercedes Arena",
+      "dir": "L",
+      "deg": 160,
+      "start": 0.1929,
+      "end": 0.2261,
+      "mid": 0.2095
+    },
+    {
+      "label": "4",
+      "name": "Mercedes Arena",
+      "dir": "R",
+      "deg": 94,
+      "start": 0.2269,
+      "end": 0.2515,
+      "mid": 0.2392
+    },
+    {
+      "label": "5",
+      "name": "Valvoline-Kurve",
+      "dir": "L",
+      "deg": 85,
+      "start": 0.3138,
+      "end": 0.3461,
+      "mid": 0.33
+    },
+    {
+      "label": "6",
+      "name": "Ford-Kurve",
+      "dir": "R",
+      "deg": 131,
+      "start": 0.3485,
+      "end": 0.3796,
+      "mid": 0.364
+    },
+    {
+      "label": "7",
+      "name": "Dunlop-Kehre",
+      "dir": "R",
+      "deg": 196,
+      "start": 0.4632,
+      "end": 0.5022,
+      "mid": 0.4827
+    },
+    {
+      "label": "8",
+      "name": "Michael Schumacher S",
+      "dir": "L",
+      "deg": 57,
+      "start": 0.5397,
+      "end": 0.5713,
+      "mid": 0.5555
+    },
+    {
+      "label": "9",
+      "name": "Michael Schumacher S",
+      "dir": "R",
+      "deg": 29,
+      "start": 0.5737,
+      "end": 0.5982,
+      "mid": 0.5859
+    },
+    {
+      "label": "10",
+      "name": "Kumho-Kurve",
+      "dir": "L",
+      "deg": 89,
+      "start": 0.6538,
+      "end": 0.6829,
+      "mid": 0.6683
+    },
+    {
+      "label": "11",
+      "name": "Bit-Kurve",
+      "dir": "R",
+      "deg": 112,
+      "start": 0.6865,
+      "end": 0.7275,
+      "mid": 0.707
+    },
+    {
+      "label": "12",
+      "name": "ADVAN-Bogen",
+      "dir": "R",
+      "deg": 33,
+      "start": 0.7756,
+      "end": 0.813,
+      "mid": 0.7943
+    },
+    {
+      "label": "13",
+      "name": "Veedol-Schikane",
+      "dir": "L",
+      "deg": 62,
+      "start": 0.8735,
+      "end": 0.8865,
+      "mid": 0.88
+    },
+    {
+      "label": "14",
+      "name": "Veedol-Schikane",
+      "dir": "R",
+      "deg": 62,
+      "start": 0.8869,
+      "end": 0.9096,
+      "mid": 0.8982
+    },
+    {
+      "label": "15",
+      "name": "Coca-Cola-Kurve",
+      "dir": "R",
+      "deg": 148,
+      "start": 0.9285,
+      "end": 0.97,
+      "mid": 0.9492
+    }
+  ]
+}

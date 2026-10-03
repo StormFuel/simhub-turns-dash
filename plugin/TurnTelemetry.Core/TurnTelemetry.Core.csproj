@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- SimHub-independent logic. netstandard2.0 loads in SimHub (net48) and in the net8 test project. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TurnTelemetry.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SimHub ships Newtonsoft.Json 13.0.0.0; the host binds to that copy at runtime. -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="TurnTelemetry.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Curated turn files and tyre presets ship inside the DLL. -->
+    <EmbeddedResource Include="..\..\data\**\*.json" Exclude="..\..\data\curation\**" LogicalName="data/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

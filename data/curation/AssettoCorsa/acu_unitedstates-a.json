@@ -1,0 +1,12 @@
+{
+  "game": "AssettoCorsa",
+  "track": "acu_unitedstates-a",
+  "circuit": "Circuit of the Americas",
+  "sources": [
+    "AC acu_unitedstates/a/data/sections.ini (Turn 1-20)",
+    "https://en.wikipedia.org/wiki/Circuit_of_the_Americas (20 turns)"
+  ],
+  "notes": "Numbers and ranges taken from the mod's own numbered sections.",
+  "fromSections": true,
+  "turns": []
+}

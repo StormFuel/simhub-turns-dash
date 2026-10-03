@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsaCompetizione",
+  "track": "monza",
+  "trackName": "Autodromo Nazionale Monza",
+  "lengthMeters": 5751,
+  "source": "official numbering (https://www.mercedesamgf1.com/news/explained-how-the-monza-corners-got-their-names; https://www.total-motorsport.com/italian-grand-prix-track-guide-monza/ (11 turns)); positions from SimHub map monza-5793.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Variante del Rettifilo",
+      "start": 0.1534,
+      "end": 0.1642
+    },
+    {
+      "label": "2",
+      "name": "Variante del Rettifilo",
+      "start": 0.1646,
+      "end": 0.1766
+    },
+    {
+      "label": "3",
+      "name": "Curva Grande",
+      "start": 0.2197,
+      "end": 0.302
+    },
+    {
+      "label": "4",
+      "name": "Variante della Roggia",
+      "start": 0.3617,
+      "end": 0.3739
+    },
+    {
+      "label": "5",
+      "name": "Variante della Roggia",
+      "start": 0.3746,
+      "end": 0.3859
+    },
+    {
+      "label": "6",
+      "name": "Lesmo 1",
+      "start": 0.4227,
+      "end": 0.4623
+    },
+    {
+      "label": "7",
+      "name": "Lesmo 2",
+      "start": 0.4849,
+      "end": 0.511
+    },
+    {
+      "label": "8",
+      "name": "Variante Ascari",
+      "start": 0.6724,
+      "end": 0.6905
+    },
+    {
+      "label": "9",
+      "name": "Variante Ascari",
+      "start": 0.6916,
+      "end": 0.709
+    },
+    {
+      "label": "10",
+      "name": "Variante Ascari",
+      "start": 0.7101,
+      "end": 0.7316
+    },
+    {
+      "label": "11",
+      "name": "Curva Alboreto (Parabolica)",
+      "start": 0.8752,
+      "end": 0.9549
+    }
+  ]
+}

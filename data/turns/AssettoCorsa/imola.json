@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "imola",
+  "trackName": "Autodromo Enzo e Dino Ferrari (Imola)",
+  "lengthMeters": 4864,
+  "source": "official numbering (https://www.total-motorsport.com/emilia-romagna-grand-prix-track-guide-imola/ (19 turns, corner by corner with directions); https://en.wikipedia.org/wiki/Imola_Circuit (19 turns)); positions from SimHub map imola-4862.89111328125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Kink",
+      "start": 0.044,
+      "end": 0.095
+    },
+    {
+      "label": "2",
+      "name": "Tamburello",
+      "start": 0.1294,
+      "end": 0.1495
+    },
+    {
+      "label": "3",
+      "name": "Tamburello",
+      "start": 0.1503,
+      "end": 0.1676
+    },
+    {
+      "label": "4",
+      "name": "Tamburello",
+      "start": 0.1697,
+      "end": 0.1985
+    },
+    {
+      "label": "5",
+      "name": "Villeneuve",
+      "start": 0.2585,
+      "end": 0.279
+    },
+    {
+      "label": "6",
+      "name": "Villeneuve",
+      "start": 0.2806,
+      "end": 0.3047
+    },
+    {
+      "label": "7",
+      "name": "Tosa",
+      "start": 0.3315,
+      "end": 0.367
+    },
+    {
+      "label": "8",
+      "name": "Kink",
+      "start": 0.41,
+      "end": 0.453
+    },
+    {
+      "label": "9",
+      "name": "Piratella",
+      "start": 0.46,
+      "end": 0.49
+    },
+    {
+      "label": "10",
+      "name": "Piratella",
+      "start": 0.49,
+      "end": 0.526
+    },
+    {
+      "label": "11",
+      "name": "Acque Minerali",
+      "start": 0.543,
+      "end": 0.569
+    },
+    {
+      "label": "12",
+      "name": "Acque Minerali",
+      "start": 0.569,
+      "end": 0.59
+    },
+    {
+      "label": "13",
+      "name": "Acque Minerali",
+      "start": 0.5912,
+      "end": 0.6073
+    },
+    {
+      "label": "14",
+      "name": "Variante Alta",
+      "start": 0.6744,
+      "end": 0.6863
+    },
+    {
+      "label": "15",
+      "name": "Variante Alta",
+      "start": 0.6871,
+      "end": 0.7038
+    },
+    {
+      "label": "16",
+      "name": "Kink",
+      "start": 0.783,
+      "end": 0.824
+    },
+    {
+      "label": "17",
+      "name": "Rivazza",
+      "start": 0.8314,
+      "end": 0.8566
+    },
+    {
+      "label": "18",
+      "name": "Rivazza",
+      "start": 0.857,
+      "end": 0.8852
+    },
+    {
+      "label": "19",
+      "name": "Kink",
+      "start": 0.917,
+      "end": 0.999
+    }
+  ]
+}

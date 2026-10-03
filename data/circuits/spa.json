@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "id": "spa",
+  "circuit": "Circuit de Spa-Francorchamps",
+  "lengthMeters": 6939,
+  "reference": "AssettoCorsa/fn_spa-gp",
+  "source": "official numbering (https://www.total-motorsport.com/spa-francorchamps-corner-names-belgian-gp/ (19 turns); https://coachdaveacademy.com/tutorials/circuit-de-spa-francorchamps-track-guide/ (19 turns)); positions from SimHub map fn_spa-gp-6943.572265625.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "La Source",
+      "dir": "R",
+      "deg": 148,
+      "start": 0.0485,
+      "end": 0.0674,
+      "mid": 0.058
+    },
+    {
+      "label": "2",
+      "name": "Eau Rouge",
+      "dir": "L",
+      "deg": 13,
+      "start": 0.136,
+      "end": 0.154,
+      "mid": 0.145
+    },
+    {
+      "label": "3",
+      "name": "Raidillon",
+      "dir": "R",
+      "deg": 38,
+      "start": 0.1556,
+      "end": 0.1774,
+      "mid": 0.1665
+    },
+    {
+      "label": "4",
+      "name": "Raidillon",
+      "dir": "L",
+      "deg": 19,
+      "start": 0.18,
+      "end": 0.201,
+      "mid": 0.1905
+    },
+    {
+      "label": "5",
+      "name": "Les Combes",
+      "dir": "R",
+      "deg": 62,
+      "start": 0.337,
+      "end": 0.3537,
+      "mid": 0.3454
+    },
+    {
+      "label": "6",
+      "name": "Les Combes",
+      "dir": "L",
+      "deg": 67,
+      "start": 0.3543,
+      "end": 0.3692,
+      "mid": 0.3618
+    },
+    {
+      "label": "7",
+      "name": "Malmedy",
+      "dir": "R",
+      "deg": 77,
+      "start": 0.3703,
+      "end": 0.3925,
+      "mid": 0.3814
+    },
+    {
+      "label": "8",
+      "name": "Bruxelles",
+      "dir": "R",
+      "deg": 191,
+      "start": 0.4219,
+      "end": 0.4576,
+      "mid": 0.4397
+    },
+    {
+      "label": "9",
+      "name": "Speaker's Corner",
+      "dir": "L",
+      "deg": 86,
+      "start": 0.4596,
+      "end": 0.484,
+      "mid": 0.4718
+    },
+    {
+      "label": "10",
+      "name": "Pouhon",
+      "dir": "L",
+      "deg": 79,
+      "start": 0.535,
+      "end": 0.565,
+      "mid": 0.55
+    },
+    {
+      "label": "11",
+      "name": "Pouhon",
+      "dir": "L",
+      "deg": 70,
+      "start": 0.565,
+      "end": 0.602,
+      "mid": 0.5835
+    },
+    {
+      "label": "12",
+      "name": "Fagnes",
+      "dir": "R",
+      "deg": 95,
+      "start": 0.6316,
+      "end": 0.6575,
+      "mid": 0.6445
+    },
+    {
+      "label": "13",
+      "name": "Fagnes",
+      "dir": "L",
+      "deg": 88,
+      "start": 0.6584,
+      "end": 0.6832,
+      "mid": 0.6708
+    },
+    {
+      "label": "14",
+      "name": "Stavelot",
+      "dir": "R",
+      "deg": 95,
+      "start": 0.6967,
+      "end": 0.7203,
+      "mid": 0.7085
+    },
+    {
+      "label": "15",
+      "name": "Paul Frère",
+      "dir": "R",
+      "deg": 96,
+      "start": 0.7261,
+      "end": 0.7809,
+      "mid": 0.7535
+    },
+    {
+      "label": "16",
+      "name": "Blanchimont",
+      "dir": "L",
+      "deg": 38,
+      "start": 0.821,
+      "end": 0.866,
+      "mid": 0.8435
+    },
+    {
+      "label": "17",
+      "name": "Blanchimont",
+      "dir": "L",
+      "deg": 48,
+      "start": 0.866,
+      "end": 0.906,
+      "mid": 0.886
+    },
+    {
+      "label": "18",
+      "name": "Bus Stop",
+      "dir": "R",
+      "deg": 89,
+      "start": 0.9583,
+      "end": 0.9696,
+      "mid": 0.964
+    },
+    {
+      "label": "19",
+      "name": "Bus Stop",
+      "dir": "L",
+      "deg": 115,
+      "start": 0.9698,
+      "end": 0.9822,
+      "mid": 0.976
+    }
+  ]
+}

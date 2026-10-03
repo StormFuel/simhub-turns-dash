@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "id": "laguna-seca",
+  "circuit": "WeatherTech Raceway Laguna Seca",
+  "lengthMeters": 3558,
+  "reference": "AssettoCorsa/ks_laguna_seca",
+  "source": "official numbering (https://en.wikipedia.org/wiki/Laguna_Seca (Corkscrew = turns 8 and 8A); http://trackpedia.racetrackdriving.com/wiki/Turn_by_turn_guide_to_the_Laguna_Seca_track (turn 7 right kink before the Corkscrew)); positions from SimHub map ks_laguna_seca-3558.31567382813.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Turn 1",
+      "dir": "L",
+      "deg": 20,
+      "start": 0.0485,
+      "end": 0.0913,
+      "mid": 0.0699
+    },
+    {
+      "label": "2",
+      "name": "Andretti Hairpin",
+      "dir": "L",
+      "deg": 195,
+      "start": 0.1003,
+      "end": 0.1644,
+      "mid": 0.1323
+    },
+    {
+      "label": "3",
+      "name": "Turn 3",
+      "dir": "R",
+      "deg": 120,
+      "start": 0.1694,
+      "end": 0.2412,
+      "mid": 0.2053
+    },
+    {
+      "label": "4",
+      "name": "Turn 4",
+      "dir": "R",
+      "deg": 91,
+      "start": 0.2688,
+      "end": 0.3652,
+      "mid": 0.317
+    },
+    {
+      "label": "5",
+      "name": "Turn 5",
+      "dir": "L",
+      "deg": 115,
+      "start": 0.4039,
+      "end": 0.4619,
+      "mid": 0.4329
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "dir": "L",
+      "deg": 80,
+      "start": 0.5204,
+      "end": 0.5961,
+      "mid": 0.5582
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "dir": "R",
+      "deg": 11,
+      "start": 0.641,
+      "end": 0.671,
+      "mid": 0.656
+    },
+    {
+      "label": "8",
+      "name": "The Corkscrew",
+      "dir": "L",
+      "deg": 74,
+      "start": 0.674,
+      "end": 0.692,
+      "mid": 0.683
+    },
+    {
+      "label": "8A",
+      "name": "The Corkscrew",
+      "dir": "R",
+      "deg": 71,
+      "start": 0.6931,
+      "end": 0.7211,
+      "mid": 0.7071
+    },
+    {
+      "label": "9",
+      "name": "Rainey Curve",
+      "dir": "L",
+      "deg": 123,
+      "start": 0.724,
+      "end": 0.7944,
+      "mid": 0.7592
+    },
+    {
+      "label": "10",
+      "name": "Turn 10",
+      "dir": "R",
+      "deg": 91,
+      "start": 0.8001,
+      "end": 0.8624,
+      "mid": 0.8313
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "dir": "L",
+      "deg": 117,
+      "start": 0.8984,
+      "end": 0.9295,
+      "mid": 0.914
+    }
+  ]
+}

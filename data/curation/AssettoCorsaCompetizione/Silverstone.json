@@ -1,0 +1,29 @@
+{
+  "game": "AssettoCorsaCompetizione",
+  "track": "Silverstone",
+  "circuit": "Silverstone Grand Prix Circuit",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Silverstone_Circuit (18 turns; Maggotts-Becketts 10-13 left-right-left-right, Chapel 14, Club 17-18)"
+  ],
+  "notes": "ACC's start/finish line is on the National pit straight (about 2.7 km after AC's), so the lap starts before Copse (T9). Maggotts is a flat-out flick below the detector's threshold; Luffield/Woodcote, The Loop/Aintree and Club's two apexes were split at curvature dips (tools/curate_turns.py dips).",
+  "turns": [
+    { "label": "9", "name": "Copse", "dir": "R", "corner": 1 },
+    { "label": "10", "name": "Maggotts", "range": [0.110, 0.137] },
+    { "label": "11", "name": "Becketts", "dir": "R", "corner": 2 },
+    { "label": "12", "name": "Becketts", "dir": "L", "corner": 3 },
+    { "label": "13", "name": "Becketts", "dir": "R", "corner": 4 },
+    { "label": "14", "name": "Chapel", "dir": "L", "corner": 5 },
+    { "label": "15", "name": "Stowe", "dir": "R", "corner": 6 },
+    { "label": "16", "name": "Vale", "dir": "L", "corner": 7 },
+    { "label": "17", "name": "Club", "range": [0.462, 0.479] },
+    { "label": "18", "name": "Club", "range": [0.479, 0.515] },
+    { "label": "1", "name": "Abbey", "dir": "R", "corner": 9 },
+    { "label": "2", "name": "Farm", "dir": "L", "corner": 10 },
+    { "label": "3", "name": "Village", "dir": "R", "corner": 11 },
+    { "label": "4", "name": "The Loop", "range": [0.686, 0.712] },
+    { "label": "5", "name": "Aintree", "range": [0.712, 0.747] },
+    { "label": "6", "name": "Brooklands", "dir": "L", "corner": 13 },
+    { "label": "7", "name": "Luffield", "range": [0.871, 0.917] },
+    { "label": "8", "name": "Woodcote", "range": [0.917, 0.975] }
+  ]
+}

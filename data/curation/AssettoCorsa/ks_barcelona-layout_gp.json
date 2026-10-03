@@ -1,0 +1,113 @@
+{
+  "game": "AssettoCorsa",
+  "track": "ks_barcelona-layout_gp",
+  "circuit": "Circuit de Barcelona-Catalunya (2007-2020 layout, with chicane)",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Circuit_de_Barcelona-Catalunya (2007-2020 layout: 16 turns; 2021+ without chicane: 14)",
+    "https://www.total-motorsport.com/barcelona-gp-corner-names-circuit-de-barcelona-catalunya/",
+    "AC ks_barcelona sections.ini corner names"
+  ],
+  "notes": "Kunos' layout still has the final chicane, so the 16-turn (2007-2020) numbering applies. Turns 6/7 (both left) split at their curvature dip (0.540).",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Elf",
+      "corner": 1,
+      "dir": "R"
+    },
+    {
+      "label": "2",
+      "name": "Elf",
+      "corner": 2,
+      "dir": "L"
+    },
+    {
+      "label": "3",
+      "name": "Renault",
+      "corner": 3,
+      "dir": "R"
+    },
+    {
+      "label": "4",
+      "name": "Repsol",
+      "corner": 4,
+      "dir": "R"
+    },
+    {
+      "label": "5",
+      "name": "Seat",
+      "corner": 5,
+      "dir": "L"
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "range": [
+        0.498,
+        0.54
+      ]
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "range": [
+        0.54,
+        0.568
+      ]
+    },
+    {
+      "label": "8",
+      "name": "Turn 8",
+      "corner": 7,
+      "dir": "R"
+    },
+    {
+      "label": "9",
+      "name": "Campsa",
+      "corner": 8,
+      "dir": "R"
+    },
+    {
+      "label": "10",
+      "name": "La Caixa",
+      "corner": 9,
+      "dir": "L"
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "corner": 10,
+      "dir": "L"
+    },
+    {
+      "label": "12",
+      "name": "Banc Sabadell",
+      "corner": 11,
+      "dir": "R"
+    },
+    {
+      "label": "13",
+      "name": "Europcar",
+      "corner": 12,
+      "dir": "R"
+    },
+    {
+      "label": "14",
+      "name": "Chicane",
+      "corner": 13,
+      "dir": "L"
+    },
+    {
+      "label": "15",
+      "name": "Chicane",
+      "corner": 14,
+      "dir": "R"
+    },
+    {
+      "label": "16",
+      "name": "New Holland",
+      "corner": 15,
+      "dir": "R"
+    }
+  ]
+}

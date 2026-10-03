@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "acu_unitedstates-a",
+  "trackName": "Circuit of the Americas",
+  "lengthMeters": 5428,
+  "source": "official numbering (AC acu_unitedstates/a/data/sections.ini (Turn 1-20); https://en.wikipedia.org/wiki/Circuit_of_the_Americas (20 turns)); positions from SimHub map acu_unitedstates-a-5411.17626953125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Turn 1",
+      "start": 0.112,
+      "end": 0.131
+    },
+    {
+      "label": "2",
+      "name": "Turn 2",
+      "start": 0.149,
+      "end": 0.182
+    },
+    {
+      "label": "3",
+      "name": "Turn 3",
+      "start": 0.208,
+      "end": 0.22
+    },
+    {
+      "label": "4",
+      "name": "Turn 4",
+      "start": 0.225,
+      "end": 0.239
+    },
+    {
+      "label": "5",
+      "name": "Turn 5",
+      "start": 0.242,
+      "end": 0.255
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "start": 0.263,
+      "end": 0.298
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "start": 0.311,
+      "end": 0.317
+    },
+    {
+      "label": "8",
+      "name": "Turn 8",
+      "start": 0.338,
+      "end": 0.353
+    },
+    {
+      "label": "9",
+      "name": "Turn 9",
+      "start": 0.356,
+      "end": 0.364
+    },
+    {
+      "label": "10",
+      "name": "Turn 10",
+      "start": 0.393,
+      "end": 0.4
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "start": 0.463,
+      "end": 0.476
+    },
+    {
+      "label": "12",
+      "name": "Turn 12",
+      "start": 0.682,
+      "end": 0.7
+    },
+    {
+      "label": "13",
+      "name": "Turn 13",
+      "start": 0.723,
+      "end": 0.735
+    },
+    {
+      "label": "14",
+      "name": "Turn 14",
+      "start": 0.74,
+      "end": 0.752
+    },
+    {
+      "label": "15",
+      "name": "Turn 15",
+      "start": 0.775,
+      "end": 0.789
+    },
+    {
+      "label": "16",
+      "name": "Turn 16",
+      "start": 0.813,
+      "end": 0.825
+    },
+    {
+      "label": "17",
+      "name": "Turn 17",
+      "start": 0.835,
+      "end": 0.842
+    },
+    {
+      "label": "18",
+      "name": "Turn 18",
+      "start": 0.855,
+      "end": 0.879
+    },
+    {
+      "label": "19",
+      "name": "Turn 19",
+      "start": 0.914,
+      "end": 0.931
+    },
+    {
+      "label": "20",
+      "name": "Turn 20",
+      "start": 0.965,
+      "end": 0.982
+    }
+  ]
+}

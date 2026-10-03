@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TurnTelemetry.Core/TurnTelemetry.Core.csproj" />
+  <Project Path="TurnTelemetry.Tests/TurnTelemetry.Tests.csproj" />
+  <Project Path="TurnTelemetry/TurnTelemetry.csproj" />
+</Solution>

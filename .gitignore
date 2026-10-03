@@ -1,0 +1,7 @@
+bin/
+obj/
+*.user
+.vs/
+dist/
+__pycache__/
+docs/images/*.html

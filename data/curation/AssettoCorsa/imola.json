@@ -1,0 +1,142 @@
+{
+  "game": "AssettoCorsa",
+  "track": "imola",
+  "circuit": "Autodromo Enzo e Dino Ferrari (Imola)",
+  "sources": [
+    "https://www.total-motorsport.com/emilia-romagna-grand-prix-track-guide-imola/ (19 turns, corner by corner with directions)",
+    "https://en.wikipedia.org/wiki/Imola_Circuit (19 turns)"
+  ],
+  "notes": "Every direction matches the published list. Flat-out kinks 1, 8, 16 and 19 located with the low-threshold probe; Piratella (9/10) and Acque Minerali (11/12) split at curvature dips.",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Kink",
+      "range": [
+        0.044,
+        0.095
+      ]
+    },
+    {
+      "label": "2",
+      "name": "Tamburello",
+      "corner": 1,
+      "dir": "L"
+    },
+    {
+      "label": "3",
+      "name": "Tamburello",
+      "corner": 2,
+      "dir": "R"
+    },
+    {
+      "label": "4",
+      "name": "Tamburello",
+      "corner": 3,
+      "dir": "L"
+    },
+    {
+      "label": "5",
+      "name": "Villeneuve",
+      "corner": 4,
+      "dir": "L"
+    },
+    {
+      "label": "6",
+      "name": "Villeneuve",
+      "corner": 5,
+      "dir": "R"
+    },
+    {
+      "label": "7",
+      "name": "Tosa",
+      "corner": 6,
+      "dir": "L"
+    },
+    {
+      "label": "8",
+      "name": "Kink",
+      "range": [
+        0.41,
+        0.453
+      ]
+    },
+    {
+      "label": "9",
+      "name": "Piratella",
+      "range": [
+        0.46,
+        0.49
+      ]
+    },
+    {
+      "label": "10",
+      "name": "Piratella",
+      "range": [
+        0.49,
+        0.526
+      ]
+    },
+    {
+      "label": "11",
+      "name": "Acque Minerali",
+      "range": [
+        0.543,
+        0.569
+      ]
+    },
+    {
+      "label": "12",
+      "name": "Acque Minerali",
+      "range": [
+        0.569,
+        0.59
+      ]
+    },
+    {
+      "label": "13",
+      "name": "Acque Minerali",
+      "corner": 9,
+      "dir": "L"
+    },
+    {
+      "label": "14",
+      "name": "Variante Alta",
+      "corner": 10,
+      "dir": "R"
+    },
+    {
+      "label": "15",
+      "name": "Variante Alta",
+      "corner": 11,
+      "dir": "L"
+    },
+    {
+      "label": "16",
+      "name": "Kink",
+      "range": [
+        0.783,
+        0.824
+      ]
+    },
+    {
+      "label": "17",
+      "name": "Rivazza",
+      "corner": 12,
+      "dir": "L"
+    },
+    {
+      "label": "18",
+      "name": "Rivazza",
+      "corner": 13,
+      "dir": "L"
+    },
+    {
+      "label": "19",
+      "name": "Kink",
+      "range": [
+        0.917,
+        0.999
+      ]
+    }
+  ]
+}

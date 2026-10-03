@@ -1,0 +1,36 @@
+{
+  "presets": [
+    {
+      "id": "acc-dry",
+      "note": "PROVISIONAL. ACC GT3/GT4 dry; validate in Phase 3 (docs/plan.md).",
+      "match": { "games": ["AssettoCorsaCompetizione"], "compound": "(?i)dry" },
+      "temp": { "cold": 60, "optLow": 75, "optHigh": 95, "hot": 105 },
+      "pressure": { "optLow": 26.0, "optHigh": 27.0, "unit": "psi" }
+    },
+    {
+      "id": "acc-wet",
+      "note": "PROVISIONAL. ACC wet compound.",
+      "match": { "games": ["AssettoCorsaCompetizione"], "compound": "(?i)wet" },
+      "temp": { "cold": 25, "optLow": 40, "optHigh": 70, "hot": 85 },
+      "pressure": { "optLow": 29.5, "optHigh": 31.0, "unit": "psi" }
+    },
+    {
+      "id": "ac-street",
+      "note": "PROVISIONAL. AC street, semi-slick and vintage compounds. Listed before ac-slick so 'Semislicks' matches here.",
+      "match": { "games": ["AssettoCorsa"], "compound": "(?i)semi|street|road|vintage" },
+      "temp": { "cold": 45, "optLow": 65, "optHigh": 95, "hot": 110 }
+    },
+    {
+      "id": "ac-slick",
+      "note": "PROVISIONAL. AC racing slicks.",
+      "match": { "games": ["AssettoCorsa"], "compound": "(?i)slick" },
+      "temp": { "cold": 60, "optLow": 80, "optHigh": 105, "hot": 115 }
+    },
+    {
+      "id": "generic",
+      "note": "Any sim or compound without a more specific preset.",
+      "match": { "games": ["*"] },
+      "temp": { "cold": 60, "optLow": 75, "optHigh": 100, "hot": 115 }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "id": "monza",
+  "circuit": "Autodromo Nazionale Monza",
+  "lengthMeters": 5752,
+  "reference": "AssettoCorsa/monza",
+  "source": "official numbering (https://www.mercedesamgf1.com/news/explained-how-the-monza-corners-got-their-names; https://www.total-motorsport.com/italian-grand-prix-track-guide-monza/ (11 turns)); positions from SimHub map monza-5755.01953125.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Variante del Rettifilo",
+      "dir": "R",
+      "deg": 60,
+      "start": 0.1551,
+      "end": 0.1653,
+      "mid": 0.1602
+    },
+    {
+      "label": "2",
+      "name": "Variante del Rettifilo",
+      "dir": "L",
+      "deg": 82,
+      "start": 0.1661,
+      "end": 0.177,
+      "mid": 0.1715
+    },
+    {
+      "label": "3",
+      "name": "Curva Grande",
+      "dir": "R",
+      "deg": 76,
+      "start": 0.2187,
+      "end": 0.3027,
+      "mid": 0.2607
+    },
+    {
+      "label": "4",
+      "name": "Variante della Roggia",
+      "dir": "L",
+      "deg": 51,
+      "start": 0.3632,
+      "end": 0.3749,
+      "mid": 0.369
+    },
+    {
+      "label": "5",
+      "name": "Variante della Roggia",
+      "dir": "R",
+      "deg": 41,
+      "start": 0.3753,
+      "end": 0.3856,
+      "mid": 0.3805
+    },
+    {
+      "label": "6",
+      "name": "Lesmo 1",
+      "dir": "R",
+      "deg": 104,
+      "start": 0.4245,
+      "end": 0.4605,
+      "mid": 0.4425
+    },
+    {
+      "label": "7",
+      "name": "Lesmo 2",
+      "dir": "R",
+      "deg": 66,
+      "start": 0.4873,
+      "end": 0.51,
+      "mid": 0.4987
+    },
+    {
+      "label": "8",
+      "name": "Variante Ascari",
+      "dir": "L",
+      "deg": 48,
+      "start": 0.674,
+      "end": 0.6907,
+      "mid": 0.6824
+    },
+    {
+      "label": "9",
+      "name": "Variante Ascari",
+      "dir": "R",
+      "deg": 42,
+      "start": 0.6921,
+      "end": 0.7092,
+      "mid": 0.7006
+    },
+    {
+      "label": "10",
+      "name": "Variante Ascari",
+      "dir": "L",
+      "deg": 35,
+      "start": 0.7106,
+      "end": 0.7297,
+      "mid": 0.7202
+    },
+    {
+      "label": "11",
+      "name": "Curva Alboreto (Parabolica)",
+      "dir": "R",
+      "deg": 170,
+      "start": 0.8781,
+      "end": 0.9543,
+      "mid": 0.9162
+    }
+  ]
+}

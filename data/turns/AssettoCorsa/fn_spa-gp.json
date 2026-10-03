@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "game": "AssettoCorsa",
+  "track": "fn_spa-gp",
+  "trackName": "Circuit de Spa-Francorchamps",
+  "lengthMeters": 6939,
+  "source": "official numbering (https://www.total-motorsport.com/spa-francorchamps-corner-names-belgian-gp/ (19 turns); https://coachdaveacademy.com/tutorials/circuit-de-spa-francorchamps-track-guide/ (19 turns)); positions from SimHub map fn_spa-gp-6943.572265625.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "La Source",
+      "start": 0.0485,
+      "end": 0.0674
+    },
+    {
+      "label": "2",
+      "name": "Eau Rouge",
+      "start": 0.136,
+      "end": 0.154
+    },
+    {
+      "label": "3",
+      "name": "Raidillon",
+      "start": 0.1556,
+      "end": 0.1774
+    },
+    {
+      "label": "4",
+      "name": "Raidillon",
+      "start": 0.18,
+      "end": 0.201
+    },
+    {
+      "label": "5",
+      "name": "Les Combes",
+      "start": 0.337,
+      "end": 0.3537
+    },
+    {
+      "label": "6",
+      "name": "Les Combes",
+      "start": 0.3543,
+      "end": 0.3692
+    },
+    {
+      "label": "7",
+      "name": "Malmedy",
+      "start": 0.3703,
+      "end": 0.3925
+    },
+    {
+      "label": "8",
+      "name": "Bruxelles",
+      "start": 0.4219,
+      "end": 0.4576
+    },
+    {
+      "label": "9",
+      "name": "Speaker's Corner",
+      "start": 0.4596,
+      "end": 0.484
+    },
+    {
+      "label": "10",
+      "name": "Pouhon",
+      "start": 0.535,
+      "end": 0.565
+    },
+    {
+      "label": "11",
+      "name": "Pouhon",
+      "start": 0.565,
+      "end": 0.602
+    },
+    {
+      "label": "12",
+      "name": "Fagnes",
+      "start": 0.6316,
+      "end": 0.6575
+    },
+    {
+      "label": "13",
+      "name": "Fagnes",
+      "start": 0.6584,
+      "end": 0.6832
+    },
+    {
+      "label": "14",
+      "name": "Stavelot",
+      "start": 0.6967,
+      "end": 0.7203
+    },
+    {
+      "label": "15",
+      "name": "Paul Frère",
+      "start": 0.7261,
+      "end": 0.7809
+    },
+    {
+      "label": "16",
+      "name": "Blanchimont",
+      "start": 0.821,
+      "end": 0.866
+    },
+    {
+      "label": "17",
+      "name": "Blanchimont",
+      "start": 0.866,
+      "end": 0.906
+    },
+    {
+      "label": "18",
+      "name": "Bus Stop",
+      "start": 0.9583,
+      "end": 0.9696
+    },
+    {
+      "label": "19",
+      "name": "Bus Stop",
+      "start": 0.9698,
+      "end": 0.9822
+    }
+  ]
+}

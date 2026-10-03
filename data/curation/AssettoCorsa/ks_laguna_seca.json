@@ -1,0 +1,86 @@
+{
+  "game": "AssettoCorsa",
+  "track": "ks_laguna_seca",
+  "circuit": "WeatherTech Raceway Laguna Seca",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Laguna_Seca (Corkscrew = turns 8 and 8A)",
+    "http://trackpedia.racetrackdriving.com/wiki/Turn_by_turn_guide_to_the_Laguna_Seca_track (turn 7 right kink before the Corkscrew)"
+  ],
+  "notes": "Turn 7 is a flat right kink below the detector's threshold, located with the probe.",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Turn 1",
+      "corner": 1,
+      "dir": "L"
+    },
+    {
+      "label": "2",
+      "name": "Andretti Hairpin",
+      "corner": 2,
+      "dir": "L"
+    },
+    {
+      "label": "3",
+      "name": "Turn 3",
+      "corner": 3,
+      "dir": "R"
+    },
+    {
+      "label": "4",
+      "name": "Turn 4",
+      "corner": 4,
+      "dir": "R"
+    },
+    {
+      "label": "5",
+      "name": "Turn 5",
+      "corner": 5,
+      "dir": "L"
+    },
+    {
+      "label": "6",
+      "name": "Turn 6",
+      "corner": 6,
+      "dir": "L"
+    },
+    {
+      "label": "7",
+      "name": "Turn 7",
+      "range": [
+        0.641,
+        0.671
+      ]
+    },
+    {
+      "label": "8",
+      "name": "The Corkscrew",
+      "corner": 7,
+      "dir": "L"
+    },
+    {
+      "label": "8A",
+      "name": "The Corkscrew",
+      "corner": 8,
+      "dir": "R"
+    },
+    {
+      "label": "9",
+      "name": "Rainey Curve",
+      "corner": 9,
+      "dir": "L"
+    },
+    {
+      "label": "10",
+      "name": "Turn 10",
+      "corner": 10,
+      "dir": "R"
+    },
+    {
+      "label": "11",
+      "name": "Turn 11",
+      "corner": 11,
+      "dir": "L"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "game": "AssettoCorsa",
+  "track": "fn_spa-gp",
+  "circuit": "Circuit de Spa-Francorchamps",
+  "sources": [
+    "https://www.total-motorsport.com/spa-francorchamps-corner-names-belgian-gp/ (19 turns)",
+    "https://coachdaveacademy.com/tutorials/circuit-de-spa-francorchamps-track-guide/ (19 turns)"
+  ],
+  "notes": "Sources agree on numbering but not on every direction; directions come from the map. Eau Rouge (2) and the Raidillon left (4) are flicks below the detector's threshold; Pouhon split at its curvature dip (0.565); Blanchimont's two lefts share one long region and are split at the midpoint.",
+  "turns": [
+    {
+      "label": "1",
+      "name": "La Source",
+      "corner": 1,
+      "dir": "R"
+    },
+    {
+      "label": "2",
+      "name": "Eau Rouge",
+      "range": [
+        0.136,
+        0.154
+      ]
+    },
+    {
+      "label": "3",
+      "name": "Raidillon",
+      "corner": 2,
+      "dir": "R"
+    },
+    {
+      "label": "4",
+      "name": "Raidillon",
+      "range": [
+        0.18,
+        0.201
+      ]
+    },
+    {
+      "label": "5",
+      "name": "Les Combes",
+      "corner": 3,
+      "dir": "R"
+    },
+    {
+      "label": "6",
+      "name": "Les Combes",
+      "corner": 4,
+      "dir": "L"
+    },
+    {
+      "label": "7",
+      "name": "Malmedy",
+      "corner": 5,
+      "dir": "R"
+    },
+    {
+      "label": "8",
+      "name": "Bruxelles",
+      "corner": 6,
+      "dir": "R"
+    },
+    {
+      "label": "9",
+      "name": "Speaker's Corner",
+      "corner": 7,
+      "dir": "L"
+    },
+    {
+      "label": "10",
+      "name": "Pouhon",
+      "range": [
+        0.535,
+        0.565
+      ]
+    },
+    {
+      "label": "11",
+      "name": "Pouhon",
+      "range": [
+        0.565,
+        0.602
+      ]
+    },
+    {
+      "label": "12",
+      "name": "Fagnes",
+      "corner": 9,
+      "dir": "R"
+    },
+    {
+      "label": "13",
+      "name": "Fagnes",
+      "corner": 10,
+      "dir": "L"
+    },
+    {
+      "label": "14",
+      "name": "Stavelot",
+      "corner": 11,
+      "dir": "R"
+    },
+    {
+      "label": "15",
+      "name": "Paul Frère",
+      "corner": 12,
+      "dir": "R"
+    },
+    {
+      "label": "16",
+      "name": "Blanchimont",
+      "range": [
+        0.821,
+        0.866
+      ]
+    },
+    {
+      "label": "17",
+      "name": "Blanchimont",
+      "range": [
+        0.866,
+        0.906
+      ]
+    },
+    {
+      "label": "18",
+      "name": "Bus Stop",
+      "corner": 14,
+      "dir": "R"
+    },
+    {
+      "label": "19",
+      "name": "Bus Stop",
+      "corner": 15,
+      "dir": "L"
+    }
+  ]
+}

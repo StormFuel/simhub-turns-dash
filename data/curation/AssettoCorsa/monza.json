@@ -1,0 +1,78 @@
+{
+  "game": "AssettoCorsa",
+  "track": "monza",
+  "circuit": "Autodromo Nazionale Monza",
+  "sources": [
+    "https://www.mercedesamgf1.com/news/explained-how-the-monza-corners-got-their-names",
+    "https://www.total-motorsport.com/italian-grand-prix-track-guide-monza/ (11 turns)"
+  ],
+  "notes": "Detected corners match the official 11 one-to-one, directions included.",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Variante del Rettifilo",
+      "dir": "R",
+      "corner": 1
+    },
+    {
+      "label": "2",
+      "name": "Variante del Rettifilo",
+      "dir": "L",
+      "corner": 2
+    },
+    {
+      "label": "3",
+      "name": "Curva Grande",
+      "dir": "R",
+      "corner": 3
+    },
+    {
+      "label": "4",
+      "name": "Variante della Roggia",
+      "dir": "L",
+      "corner": 4
+    },
+    {
+      "label": "5",
+      "name": "Variante della Roggia",
+      "dir": "R",
+      "corner": 5
+    },
+    {
+      "label": "6",
+      "name": "Lesmo 1",
+      "dir": "R",
+      "corner": 6
+    },
+    {
+      "label": "7",
+      "name": "Lesmo 2",
+      "dir": "R",
+      "corner": 7
+    },
+    {
+      "label": "8",
+      "name": "Variante Ascari",
+      "dir": "L",
+      "corner": 8
+    },
+    {
+      "label": "9",
+      "name": "Variante Ascari",
+      "dir": "R",
+      "corner": 9
+    },
+    {
+      "label": "10",
+      "name": "Variante Ascari",
+      "dir": "L",
+      "corner": 10
+    },
+    {
+      "label": "11",
+      "name": "Curva Alboreto (Parabolica)",
+      "dir": "R",
+      "corner": 11
+    }
+  ]
+}

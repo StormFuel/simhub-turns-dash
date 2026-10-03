@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "id": "mugello",
+  "circuit": "Autodromo Internazionale del Mugello",
+  "lengthMeters": 5200,
+  "reference": "AssettoCorsa/mugello",
+  "source": "official numbering (https://www.about-mugello-travel-guide.com/mugello-circuit/the-15-turns/turn-15-bucine.html (15 numbered turns); https://en.wikipedia.org/wiki/Mugello_Circuit); positions from SimHub map mugello.shtl",
+  "turns": [
+    {
+      "label": "1",
+      "name": "San Donato",
+      "dir": "R",
+      "deg": 174,
+      "start": 0.1178,
+      "end": 0.1681,
+      "mid": 0.1429
+    },
+    {
+      "label": "2",
+      "name": "Luco",
+      "dir": "L",
+      "deg": 74,
+      "start": 0.1705,
+      "end": 0.1943,
+      "mid": 0.1824
+    },
+    {
+      "label": "3",
+      "name": "Poggio Secco",
+      "dir": "R",
+      "deg": 91,
+      "start": 0.1955,
+      "end": 0.2257,
+      "mid": 0.2106
+    },
+    {
+      "label": "4",
+      "name": "Materassi",
+      "dir": "L",
+      "deg": 58,
+      "start": 0.2757,
+      "end": 0.296,
+      "mid": 0.2858
+    },
+    {
+      "label": "5",
+      "name": "Borgo San Lorenzo",
+      "dir": "R",
+      "deg": 66,
+      "start": 0.2972,
+      "end": 0.3253,
+      "mid": 0.3113
+    },
+    {
+      "label": "6",
+      "name": "Casanova",
+      "dir": "R",
+      "deg": 50,
+      "start": 0.363,
+      "end": 0.3868,
+      "mid": 0.3749
+    },
+    {
+      "label": "7",
+      "name": "Savelli",
+      "dir": "L",
+      "deg": 79,
+      "start": 0.3887,
+      "end": 0.4269,
+      "mid": 0.4078
+    },
+    {
+      "label": "8",
+      "name": "Arrabbiata 1",
+      "dir": "R",
+      "deg": 97,
+      "start": 0.4365,
+      "end": 0.4876,
+      "mid": 0.462
+    },
+    {
+      "label": "9",
+      "name": "Arrabbiata 2",
+      "dir": "R",
+      "deg": 77,
+      "start": 0.488,
+      "end": 0.534,
+      "mid": 0.511
+    },
+    {
+      "label": "10",
+      "name": "Scarperia",
+      "dir": "R",
+      "deg": 74,
+      "start": 0.5675,
+      "end": 0.5941,
+      "mid": 0.5808
+    },
+    {
+      "label": "11",
+      "name": "Palagio",
+      "dir": "L",
+      "deg": 72,
+      "start": 0.5961,
+      "end": 0.626,
+      "mid": 0.611
+    },
+    {
+      "label": "12",
+      "name": "Correntaio",
+      "dir": "R",
+      "deg": 209,
+      "start": 0.6679,
+      "end": 0.7274,
+      "mid": 0.6977
+    },
+    {
+      "label": "13",
+      "name": "Biondetti 1",
+      "dir": "L",
+      "deg": 39,
+      "start": 0.7289,
+      "end": 0.7522,
+      "mid": 0.7406
+    },
+    {
+      "label": "14",
+      "name": "Biondetti 2",
+      "dir": "R",
+      "deg": 31,
+      "start": 0.7541,
+      "end": 0.777,
+      "mid": 0.7655
+    },
+    {
+      "label": "15",
+      "name": "Bucine",
+      "dir": "L",
+      "deg": 190,
+      "start": 0.8328,
+      "end": 0.9113,
+      "mid": 0.872
+    }
+  ]
+}

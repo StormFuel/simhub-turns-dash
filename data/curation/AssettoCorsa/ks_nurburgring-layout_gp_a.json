@@ -1,0 +1,101 @@
+{
+  "game": "AssettoCorsa",
+  "track": "ks_nurburgring-layout_gp_a",
+  "circuit": "Nürburgring GP-Strecke",
+  "sources": [
+    "https://coachdaveacademy.com/tutorials/nurburgring-grand-prix-circuit-track-guide/ (15 turns with directions)"
+  ],
+  "notes": "Detected corners match the published 15 one-to-one, directions included.",
+  "turns": [
+    {
+      "label": "1",
+      "name": "Castrol-S",
+      "corner": 1,
+      "dir": "R"
+    },
+    {
+      "label": "2",
+      "name": "Mercedes Arena",
+      "corner": 2,
+      "dir": "L"
+    },
+    {
+      "label": "3",
+      "name": "Mercedes Arena",
+      "corner": 3,
+      "dir": "L"
+    },
+    {
+      "label": "4",
+      "name": "Mercedes Arena",
+      "corner": 4,
+      "dir": "R"
+    },
+    {
+      "label": "5",
+      "name": "Valvoline-Kurve",
+      "corner": 5,
+      "dir": "L"
+    },
+    {
+      "label": "6",
+      "name": "Ford-Kurve",
+      "corner": 6,
+      "dir": "R"
+    },
+    {
+      "label": "7",
+      "name": "Dunlop-Kehre",
+      "corner": 7,
+      "dir": "R"
+    },
+    {
+      "label": "8",
+      "name": "Michael Schumacher S",
+      "corner": 8,
+      "dir": "L"
+    },
+    {
+      "label": "9",
+      "name": "Michael Schumacher S",
+      "corner": 9,
+      "dir": "R"
+    },
+    {
+      "label": "10",
+      "name": "Kumho-Kurve",
+      "corner": 10,
+      "dir": "L"
+    },
+    {
+      "label": "11",
+      "name": "Bit-Kurve",
+      "corner": 11,
+      "dir": "R"
+    },
+    {
+      "label": "12",
+      "name": "ADVAN-Bogen",
+      "corner": 12,
+      "dir": "R"
+    },
+    {
+      "label": "13",
+      "name": "Veedol-Schikane",
+      "corner": 13,
+      "dir": "L"
+    },
+    {
+      "label": "14",
+      "name": "Veedol-Schikane",
+      "corner": 14,
+      "dir": "R"
+    },
+    {
+      "label": "15",
+      "name": "Coca-Cola-Kurve",
+      "corner": 15,
+      "dir": "R"
+    }
+  ]
+}
