@@ -89,6 +89,32 @@ namespace TurnTelemetryHost
             guide.Inlines.Add(link);
             root.Children.Add(guide);
 
+            // --- Problem report
+            root.Children.Add(Heading("Report a problem", 14));
+            root.Children.Add(Note("Saves a zip with versions, these diagnostics, recent events (laps, sectors, track limits, " +
+                                   "errors), your settings and this track's turn/sector files. Attach it to a GitHub issue or " +
+                                   "a Discord post and say what happened and when. Tip: bind the SaveReport action to a wheel " +
+                                   "button (Controls and events) to save one the moment something looks wrong."));
+            var reportStatus = new TextBlock { Opacity = 0.7, Margin = new Thickness(0, 0, 0, 6), TextWrapping = TextWrapping.Wrap };
+            var reportButtons = new WrapPanel();
+            reportButtons.Children.Add(Button("Save problem report", () =>
+            {
+                try
+                {
+                    var path = ReportWriter.Write(_plugin);
+                    reportStatus.Text = "Saved " + path;
+                    ReportWriter.Show(path);
+                }
+                catch (Exception ex) { reportStatus.Text = "Couldn't save the report: " + ex.Message; }
+            }));
+            reportButtons.Children.Add(Button("Open reports folder", () =>
+            {
+                Directory.CreateDirectory(ReportWriter.ReportsFolder(_plugin));
+                Process.Start("explorer.exe", ReportWriter.ReportsFolder(_plugin));
+            }));
+            root.Children.Add(reportButtons);
+            root.Children.Add(reportStatus);
+
             // --- Diagnostics
             root.Children.Add(Heading("Live diagnostics", 14));
             _diagnostics = new TextBlock { FontFamily = new FontFamily("Consolas"), FontSize = 12, TextWrapping = TextWrapping.Wrap };

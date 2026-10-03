@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TurnTelemetry.Core.Diagnostics;
 using TurnTelemetry.Core.Input;
 using TurnTelemetry.Core.Lap;
 using TurnTelemetry.Core.Sims;
@@ -61,6 +62,9 @@ namespace TurnTelemetry.Core.Engine
             Options = options ?? new EngineOptions();
             _catalog = new TurnCatalog(userRoot, bundled);
             Laps = new LapStore(Options.Bins);
+            Laps.LapCompleted += lap => Log.Add(
+                $"lap {lap.LapNumber} {(lap.LapTimeSeconds > 0 ? StandingsBoard.FormatTime(lap.LapTimeSeconds) : "no time")}  " +
+                $"{(lap.Valid ? "valid" : "invalid (" + lap.InvalidReason + ")")}  coverage {lap.Coverage:P0}");
             Tyres = new TyreModel { PressureUnit = Options.PressureUnit };
             _bundledPresets = LoadPresets(bundled?.Read("data/tyres/presets.json"));
         }
@@ -105,6 +109,12 @@ namespace TurnTelemetry.Core.Engine
         public bool LimitsAvailable => Adapter.Capabilities.TyresOutLimit > 0 || Adapter.Capabilities.InvalidatesLapsInRace
                                        || (_snapshot?.SessionTypeName ?? "").IndexOf("RACE", StringComparison.OrdinalIgnoreCase) < 0;
         private double _nextTyresOutSearch;
+
+        /// <summary>Recent notable events for the problem report (docs/user-guide.md, "Reporting a problem").</summary>
+        public EventLog Log { get; } = new EventLog();
+        private int _loggedIncidents;
+        private string _loggedRating;
+        private string _loggedTurns;
 
         /// <summary>Standings window for the dashboard; the host feeds it from SimHub's opponent list.</summary>
         public StandingsBoard Standings { get; } = new StandingsBoard();
@@ -187,11 +197,25 @@ namespace TurnTelemetry.Core.Engine
                     ReadTyresOut(raw);
                     Limits.Update(Laps.Current, Catalog.Turns, frame.LapPos, TyresOut, Adapter.Capabilities.TyresOutLimit,
                         frame.LapInvalidated, frame.CurrentLapTime.TotalSeconds, now);
+                    if (Limits.Incidents != _loggedIncidents)
+                    {
+                        _loggedIncidents = Limits.Incidents;
+                        Log.Add($"track limits: {Limits.Source} at {frame.LapPos:0.000} -> T{Limits.LastTurn?.Label ?? "?"}  (tyres out {TyresOut?.ToString() ?? "n/a"})");
+                    }
                     Sectors.Observe(s.CurrentSectorIndex, frame.LapPos, frame.Discontinuity);
-                    if (Sectors.Dirty) SaveSectors();
+                    if (Sectors.Dirty)
+                    {
+                        Log.Add($"sector boundaries: {string.Join(", ", Sectors.Boundaries.Select(b => b.ToString("0.000")))} (sim index {s.CurrentSectorIndex})");
+                        SaveSectors();
+                    }
                     SectorTimes.Update(Laps.Current, Sectors, frame.LapPos, frame.CurrentLapTime.TotalSeconds,
                         s.CurrentSectorIndex, frame.Discontinuity, Standings.FastestSector, GameBestSector,
                         Limits.Incidents, frame.InPitLane);
+                    if (SectorTimes.LastRating != _loggedRating)
+                    {
+                        _loggedRating = SectorTimes.LastRating;
+                        Log.Add("sector " + _loggedRating);
+                    }
                 }
             }
         }
@@ -201,6 +225,10 @@ namespace TurnTelemetry.Core.Engine
             GameName = s.GameName;
             TrackKeyId = string.IsNullOrEmpty(s.TrackIdWithConfig) ? s.TrackId : s.TrackIdWithConfig;
             Adapter = SimAdapters.For(s.GameName, _adapters);
+            Log.Add($"session: {s.GameName}  track={TrackKeyId}  car={s.CarModel ?? s.CarId}  type={s.SessionTypeName}  adapter={Adapter.Id}");
+            _loggedIncidents = 0;
+            _loggedRating = null;
+            _loggedTurns = null;
             _normaliser.Reset();
             Laps.Reset(Options.Bins);
             _recorder.Cancel();
@@ -239,6 +267,8 @@ namespace TurnTelemetry.Core.Engine
                 Catalog = new CatalogResult { Detail = "turn data error: " + ex.Message };
             }
             if (!Catalog.Supported && showNotice) NoticeUntil = Now + Options.UnsupportedNoticeSeconds;
+            var turns = $"turns: source={CatalogResult.SourceId(Catalog.Source)}  count={Catalog.Turns.Count}  {Catalog.Detail}";
+            if (turns != _loggedTurns) Log.Add(_loggedTurns = turns);
         }
 
         private void SelectPreset(GameSnapshot s, string compound)
@@ -596,6 +626,7 @@ namespace TurnTelemetry.Core.Engine
             {
                 _nextTyresOutSearch = Now + RawDiscoverySeconds;
                 TyresOutPath = TyresOutPaths.FirstOrDefault(p => raw.Get(p) != null);
+                if (TyresOutPath != null) Log.Add("tyres-out property: " + TyresOutPath);
                 if (TyresOutPath == null)
                 {
                     var paths = raw.FindPaths("TyresOut");
@@ -614,6 +645,10 @@ namespace TurnTelemetry.Core.Engine
         }
 
         private string SectorFile => $"sectors/{TrackKey.Sanitize(GameName)}/{TrackKey.Sanitize(TrackKeyId)}.txt";
+
+        /// <summary>This track's learned sector file, or null before a session.</summary>
+        public string SectorFilePath => GameName == null || string.IsNullOrEmpty(_userRoot) ? null
+            : Path.Combine(new[] { _userRoot }.Concat(SectorFile.Split('/')).ToArray());
 
         private void SaveSectors()
         {

@@ -68,6 +68,9 @@ namespace TurnTelemetryHost
             // SET LINE (dashboard button via ButtonItem.TriggerAction; also bindable to a wheel button).
             this.AddAction("SetStartLine", (pm, action) => Engine.SetStartLine(), (pm, action) => { });
             this.AddAction("ResetTurns", (pm, action) => Engine.ResetTurns(), (pm, action) => { });
+
+            // Problem report (also a button in the settings tab); bind to a wheel button to capture the moment.
+            this.AddAction("SaveReport", (pm, action) => Log("problem report saved: " + ReportWriter.Write(this)), (pm, action) => { });
         }
 
         public void DataUpdate(PluginManager pluginManager, ref GameData data)
@@ -92,6 +95,7 @@ namespace TurnTelemetryHost
                 {
                     _lastErrorLog = now;
                     SimHub.Logging.Current.Error("Turn Telemetry: DataUpdate failed", ex);
+                    Engine.Log.Add("error: " + ex.GetType().Name + ": " + ex.Message);
                 }
             }
         }

@@ -100,7 +100,7 @@ To fix numbering:
 
 Open **Turn Telemetry** in SimHub's left menu. The **Live diagnostics** panel at the bottom shows what the plugin sees.
 
-![Plugin settings and live diagnostics](images/screenshot-plugin-settings.png)
+![Live diagnostics during an ACC session](images/screenshot-diagnostics.png)
 
 | Symptom | Check |
 | --- | --- |
@@ -110,4 +110,19 @@ Open **Turn Telemetry** in SimHub's left menu. The **Live diagnostics** panel at
 | No track limits | The `Limits` line: `available=False` means an ACC race (see above). In AC, `tyres out` should change when you go off |
 | Turn numbers wrong | Tap **SET LINE** at the start line, or use the turn editor |
 
-To report a problem, open an [issue](https://github.com/StormFuel/simhub-turns-dash/issues) with a copy of the **Live diagnostics** text.
+## Reporting a problem
+
+1. In SimHub, open **Turn Telemetry** in the left menu and click **Save problem report**. Explorer opens with the report selected, for example `TurnTelemetry-report-20261003-141502.zip`.
+2. Attach it to a [GitHub issue](https://github.com/StormFuel/simhub-turns-dash/issues) or your Discord post. Say what happened, roughly when, and on which lap or corner.
+
+**Capturing it in the moment:** bind the **SaveReport** action to a wheel button (SimHub **Controls and events**, under Turn Telemetry). Pressing it saves a report straight away, without leaving the car. Reports are kept in `SimHub\PluginsData\TurnTelemetry
+eports`.
+
+**What's in a report:**
+- plugin, SimHub and Windows versions;
+- the live diagnostics;
+- the last 500 plugin events (sessions, turn data used, laps with validity, sector boundaries and ratings, track-limit events, errors);
+- your plugin settings and this track's turn and sector files;
+- Turn Telemetry's lines from SimHub's log.
+
+Your Windows user name is masked in file paths, and no other drivers' names are included.

@@ -43,9 +43,10 @@ Uninstall with `Uninstall.cmd`. If you'd rather install by hand, the [user guide
 - **Settings:** pressure unit and tyre wear meaning.
 - **Turn editor:** fix corner numbering and names.
 - **Good to know:** what each sim supports.
-- **Live diagnostics:** what the plugin sees, useful when reporting an issue.
+- **Report a problem:** saves a zip to attach to an issue or Discord post; see [Reporting a problem](docs/user-guide.md#reporting-a-problem).
+- **Live diagnostics:** what the plugin sees.
 
-![Turn Telemetry plugin settings and live diagnostics](docs/images/screenshot-plugin-settings.png)
+![Turn Telemetry plugin settings](docs/images/screenshot-plugin-settings.png)
 
 ## Roadmap
 

@@ -19,7 +19,7 @@ from dashlib import (track_map, ABS, ACCENT, BRAKE, CENTER, CLEAR, CURRENT, GUID
 ROOT = Path(__file__).resolve().parent.parent
 NAME = 'TurnTelemetry'
 OUT = ROOT / 'dash' / NAME
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 CONTRACT = 2
 
 W, H = 1920, 1080

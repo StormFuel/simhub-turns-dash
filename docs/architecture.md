@@ -273,6 +273,8 @@ The dashboard depends on these names. Changing one is a breaking change and need
 | Recorder | `Recorder.Status` |
 | *Planned (full-lap renderer)* | A: `Trace.Lap.Image`, `Trace.Revision`. C: `Lap.Cur.<ch>.<i>`, `Lap.Ref.<ch>.<i>`, `Lap.Evt.<i>`. Added when S1/S3 picks one. |
 
+**Problem report.** `EventLog` (Core) keeps the last 500 notable events (session, turn source, laps, sector boundaries and ratings, track-limit events, errors). `ReportWriter` (host) zips it with versions, the live diagnostics, settings, the track's turn/sector files and Turn Telemetry's SimHub log lines into `PluginsData/TurnTelemetry/reports/`, masking the Windows user name. Triggered by the settings-tab button or the `SaveReport` action.
+
 **Actions.** These can also be bound to wheel buttons under SimHub *Controls and events*:
 
 - `TurnTelemetry.MarkTurnStart`, `TurnTelemetry.MarkTurnEnd`, `TurnTelemetry.ClearReferenceLap`
