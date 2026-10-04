@@ -214,4 +214,4 @@ Source and generator: [`tools/brand.py`](../tools/brand.py) writes `docs/brand/`
 - `logo.png` (dark backgrounds) and `logo-light.png` (light, with a darker green for contrast);
 - `social-preview.png` (1280×640, for the GitHub repo setting).
 
-The SimHub menu icon draws the same paths as WPF vectors (`TurnTelemetry.MenuIcon`), with flat dash caps so the kerb stripes stay crisp.
+**SimHub menu icon:** SimHub draws plugin menu icons as one-colour glyphs (only the shape counts; it paints them in the menu colour), so the full-colour mark showed as a white square. `TurnTelemetry.MenuIcon` is a simplified glyph instead: the same track path as the shape, the car as a dot in a cut-out in the line, with no background and no kerbs.
