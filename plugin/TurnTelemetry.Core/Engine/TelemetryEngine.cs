@@ -96,8 +96,29 @@ namespace TurnTelemetry.Core.Engine
             return double.IsNaN(fromList) ? own : double.IsNaN(own) ? fromList : Math.Min(fromList, own);
         }
 
+        /// <summary>Lap position where the turns strip begins (Turn 1), cached per turn list; see StripLayout.</summary>
+        public double StripOrigin
+        {
+            get
+            {
+                var turns = Catalog.Turns;
+                if (!ReferenceEquals(turns, _originTurns))
+                {
+                    _origin = StripLayout.Origin(turns);
+                    _originTurns = turns;
+                }
+                return _origin;
+            }
+        }
+        private IReadOnlyList<TurnDefinition> _originTurns;
+        private double _origin;
+
         /// <summary>The sim's raw sector index, for diagnostics.</summary>
         public int SectorIndex => _snapshot?.CurrentSectorIndex ?? 0;
+
+        /// <summary>Time gained or lost per corner against the best lap.</summary>
+        public TurnDeltas TurnDeltas { get; } = new TurnDeltas();
+        private Lap.LapTrace _sectorLap;
 
         /// <summary>Track-limit excursions per turn (this lap / session).</summary>
         public TrackLimits Limits { get; } = new TrackLimits();
@@ -116,6 +137,25 @@ namespace TurnTelemetry.Core.Engine
         private string _loggedRating;
         private string _loggedTurns;
         private string _sessionChange;
+        private bool _wasRestartFlag;
+        private double _previousOdo;
+        private int _previousCompletedLaps;
+
+        /// <summary>A drop in session distance bigger than this (m) means the session restarted.</summary>
+        public const double RestartOdoDrop = 200;
+
+        /// <summary>
+        /// A restart from the game's menu keeps the same game, track, car, session type and (in ACC) SimHub session id,
+        /// so it's detected from SimHub's restart flag, the session distance going back towards zero, or the lap counter
+        /// going backwards (user report 2026-10-03: track limits and laps carried over a restart). Null when none fired.
+        /// </summary>
+        private string RestartReason(GameSnapshot s)
+        {
+            if (s.IsSessionRestart && !_wasRestartFlag) return "restarted: SimHub restart flag";
+            if (_previousOdo - s.SessionOdo > RestartOdoDrop) return $"restarted: session distance {_previousOdo:0} m -> {s.SessionOdo:0} m";
+            if (s.CompletedLaps < _previousCompletedLaps) return $"restarted: completed laps {_previousCompletedLaps} -> {s.CompletedLaps}";
+            return null;
+        }
         private int _offPeak;
         private double _offPos;
         private double _offEnded = double.NaN;
@@ -210,9 +250,10 @@ namespace TurnTelemetry.Core.Engine
 
                 var parts = new[] { s.GameName, s.TrackIdWithConfig, s.CarId, s.SessionTypeName, s.SessionId.ToString() };
                 var key = string.Join("|", parts);
-                if (key != _sessionKey)
+                var restart = key == _sessionKey ? RestartReason(s) : null;
+                if (key != _sessionKey || restart != null)
                 {
-                    _sessionChange = SessionChange(_sessionKey, parts);
+                    _sessionChange = restart ?? SessionChange(_sessionKey, parts);
                     _sessionKey = key;
                     StartSession(s, raw);
                 }
@@ -221,6 +262,9 @@ namespace TurnTelemetry.Core.Engine
                     // AC's StaticInfo and SimHub's track map can both arrive after the session starts.
                     LoadTurns(s, raw, showNotice: false);
                 }
+                _wasRestartFlag = s.IsSessionRestart;
+                _previousOdo = s.SessionOdo;
+                _previousCompletedLaps = s.CompletedLaps;
 
                 var compound = Adapter.ReadCompound(raw);
                 if (compound != _compound) SelectPreset(s, compound);
@@ -245,6 +289,8 @@ namespace TurnTelemetry.Core.Engine
                     Limits.Update(Laps.Current, Catalog.Turns, frame.LapPos, TyresOut, Adapter.Capabilities.TyresOutLimit,
                         frame.LapInvalidated, frame.CurrentLapTime.TotalSeconds, now);
                     LogTyresOff(frame.LapPos, now);
+                    // After the track-limits update, so a cut in a corner is known before that corner is rated.
+                    TurnDeltas.Update(Catalog.Turns, Laps.Current, frame.LapPos, Limits.Incidents, frame.InPitLane);
                     if (Limits.Incidents != _loggedIncidents)
                     {
                         _loggedIncidents = Limits.Incidents;
@@ -256,9 +302,11 @@ namespace TurnTelemetry.Core.Engine
                         Log.Add($"sector boundaries: {string.Join(", ", Sectors.Boundaries.Select(b => b.ToString("0.000")))} (sim index {s.CurrentSectorIndex})");
                         SaveSectors();
                     }
-                    SectorTimes.Update(Laps.Current, Sectors, frame.LapPos, frame.CurrentLapTime.TotalSeconds,
+                    var newLap = !ReferenceEquals(Laps.Current, _sectorLap);
+                    _sectorLap = Laps.Current;
+                    SectorTimes.Update(Sectors, frame.LapPos, frame.CurrentLapTime.TotalSeconds,
                         s.CurrentSectorIndex, frame.Discontinuity, Standings.FastestSector, GameBestSector,
-                        Limits.Incidents, frame.InPitLane);
+                        Limits.Incidents, frame.InPitLane, newLap);
                     if (SectorTimes.LastRating != _loggedRating)
                     {
                         _loggedRating = SectorTimes.LastRating;
@@ -286,6 +334,7 @@ namespace TurnTelemetry.Core.Engine
             Tyres.ResetSession();
             SectorTimes.Reset();
             Limits.Reset();
+            TurnDeltas.Reset();
             TyresOut = null;
             TyresOutPath = null;
             _nextTyresOutSearch = 0;
@@ -377,6 +426,39 @@ namespace TurnTelemetry.Core.Engine
         /// Dashboard SET LINE / wheel button (D15): numbering begins here, so the next corner ahead becomes Turn 1.
         /// Within a few seconds of a change the same button undoes it.
         /// </summary>
+        /// <summary>Seconds after a first tap during which a second tap confirms the reset.</summary>
+        public const double ResetConfirmSeconds = 3;
+        private double _resetArmedUntil = double.NegativeInfinity;
+
+        /// <summary>True while a first tap on RESET LAPS waits for its confirming second tap.</summary>
+        public bool ResetArmed(double clock) => clock < _resetArmedUntil;
+
+        /// <summary>
+        /// RESET LAPS (dashboard button / ResetSession action): clears everything that belongs to this run, as if a new
+        /// session had started (laps and best lap, track-limit counts, sector times and bests, corner deltas, standings),
+        /// keeping turn data, learned sector boundaries and settings. For when the game is restarted in a way SimHub
+        /// doesn't report. Two taps: the first arms it for <see cref="ResetConfirmSeconds"/>, the second resets, so a
+        /// stray tap on the tablet can't wipe a session. <paramref name="clock"/> is a wall clock (it keeps running in
+        /// menus, unlike the game).
+        /// </summary>
+        public string RequestReset(double clock)
+        {
+            lock (_gate)
+            {
+                if (_snapshot == null) return "no session to reset";
+                if (clock >= _resetArmedUntil)
+                {
+                    _resetArmedUntil = clock + ResetConfirmSeconds;
+                    return "reset armed: tap again to confirm";
+                }
+                _resetArmedUntil = double.NegativeInfinity;
+                _sessionChange = "reset from the dashboard";
+                StartSession(_snapshot, _raw);
+                StartLine.Say(Now, "LAP DATA RESET");
+                return "lap data reset";
+            }
+        }
+
         public void SetStartLine()
         {
             lock (_gate)

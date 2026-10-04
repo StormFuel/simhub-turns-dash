@@ -41,10 +41,13 @@ namespace TurnTelemetry.Core.Lap
         private readonly PaceState[] _last = new PaceState[Max + 1];
         private readonly double[] _currentTime = new double[Max + 1];
         private readonly double[] _lastTime = new double[Max + 1];
-        private LapTrace _lap;
         private int? _previousIndex;
         private double _entry = double.NaN;
-        private double _lastLapTime;
+        /// <summary>A clock that keeps running across the line: the sim's lap timer plus every lap it has reset from.</summary>
+        private double _clockOffset;
+        private double _previousLapTime = double.NaN;
+        /// <summary>Lowest sector index the sim has reported (0 for sims that count from 0).</summary>
+        private int _baseIndex = int.MaxValue;
         /// <summary>1-based sector being driven, counted by index steps since the line; 0 when unknown.</summary>
         private int _sector;
         /// <summary>Game-reported bests captured as the sector started, so the new time can't be compared to itself.</summary>
@@ -64,9 +67,11 @@ namespace TurnTelemetry.Core.Lap
 
         public void Reset()
         {
-            _lap = null;
             _previousIndex = null;
             _entry = double.NaN;
+            _clockOffset = 0;
+            _previousLapTime = double.NaN;
+            _baseIndex = int.MaxValue;
             _sector = 0;
             _gameBestAtEntry = _fastestAtEntry = double.NaN;
             _incidentsAtEntry = 0;
@@ -89,46 +94,91 @@ namespace TurnTelemetry.Core.Lap
         public string Bests(int count) => count <= 0 ? "-" : string.Join("   ", Enumerable.Range(1, Math.Min(count, Max)).Select(n =>
             $"S{n} own={Show(_ownBest[n])} game={Show(_gameBestSeen[n])} fastest={Show(_fastestSeen[n])}"));
 
+        /// <summary>
+        /// Driven by the sim's sector index: a step up starts the next sector, a step back down means the car crossed the
+        /// line (the last sector ends, sector 1 starts, this lap's results become last lap's). Times come from a clock
+        /// built on the sim's lap timer that keeps running across the line, so it doesn't matter whether the sim resets
+        /// its lap timer, lap counter or lap position first (ACC resets the counter and timer a frame or two before the
+        /// position wraps: 2026-10-03, the old lap-object approach then lost S3 and numbered the next lap's sectors from S4).
+        /// The sim's timer stops while paused, so pauses don't count.
+        /// </summary>
         /// <param name="sessionFastest">Fastest best time for 1-based sector n by any driver, you included (NaN when unknown).</param>
         /// <param name="gameBest">Your best time for sector n as the game reports it (NaN when unknown).</param>
         /// <param name="incidents">Running count of track-limit excursions (TrackLimits.Incidents).</param>
-        public void Update(LapTrace lap, SectorMap map, double lapPos, double lapTime, int simIndex, bool discontinuity,
-            Func<int, double> sessionFastest, Func<int, double> gameBest = null, int incidents = 0, bool inPit = false)
+        public void Update(SectorMap map, double lapPos, double lapTime, int simIndex, bool discontinuity,
+            Func<int, double> sessionFastest, Func<int, double> gameBest = null, int incidents = 0, bool inPit = false,
+            bool newLap = false)
         {
-            if (lap == null) return;
-            if (!ReferenceEquals(lap, _lap))
+            var now = Clock(lapTime);
+            // SimHub numbers sectors from 1 for ACC and AC; a sim that reports 0 teaches us it counts from 0.
+            if (simIndex < _baseIndex) _baseIndex = simIndex;
+            var previous = _previousIndex;
+
+            if (!previous.HasValue)
             {
-                if (_lap != null) Close(_sector > 0 ? _sector : map.Count, _lastLapTime, incidents);
-                for (var n = 0; n <= Max; n++)
-                {
-                    _last[n] = _current[n];
-                    _lastTime[n] = _currentTime[n];
-                    _current[n] = PaceState.None;
-                    _currentTime[n] = double.NaN;
-                }
-                _lap = lap;
-                // A lap that starts at the line times sector 1 from zero; one joined mid-track can't.
-                var atLine = lapPos < 0.05;
-                _entry = atLine ? 0 : double.NaN;
-                _sector = atLine ? 1 : map.SectorAt(lapPos);
+                // First frame: at the line with a fresh timer, sector 1 can be timed; otherwise wait for the next boundary.
+                var atLine = lapPos < 0.02 && lapTime < 1;
+                _sector = Ordinal(simIndex);
+                _entry = atLine && _sector == 1 ? now - lapTime : double.NaN;
                 StartSector(sessionFastest, gameBest, incidents);
             }
             else if (discontinuity)
             {
                 _entry = double.NaN;
             }
-            else if (_previousIndex.HasValue && simIndex == _previousIndex + 1)
+            else if (simIndex > previous)
             {
-                // Count steps rather than reading the position: a saved boundary can sit a hair off the sim's.
-                var completed = _sector > 0 ? _sector : map.SectorAt(lapPos) - 1;
-                if (completed >= 1) Close(completed, lapTime, incidents);
-                _sector = completed >= 1 ? completed + 1 : 0;
-                _entry = lapTime;
+                // Next sector (a jump of more than one means a sector was missed: its time is unknown).
+                var stepped = simIndex == previous + 1;
+                if (stepped && _sector >= 1) Close(_sector, now, incidents);
+                _sector = Ordinal(simIndex);
+                _entry = stepped ? now : double.NaN;
+                StartSector(sessionFastest, gameBest, incidents);
+            }
+            else if (simIndex < previous)
+            {
+                // Back to the first sector: the car crossed the line.
+                if (_sector >= 1) Close(_sector, now, incidents);
+                Roll();
+                _sector = Ordinal(simIndex);
+                _entry = now;
+                StartSector(sessionFastest, gameBest, incidents);
+            }
+            else if (newLap && _sector == 1 && double.IsNaN(_entry))
+            {
+                // The lap counter started a lap but the sector index didn't move: on an ACC hotlap the out-lap already
+                // sits on sector 1 (timing hasn't started), so the line shows up only as a new lap. Time S1 from here.
+                Roll();
+                _entry = now - lapTime;
                 StartSector(sessionFastest, gameBest, incidents);
             }
             if (inPit) _pitInSector = true;
             _previousIndex = simIndex;
-            _lastLapTime = lapTime;
+        }
+
+        /// <summary>
+        /// 1-based sector from the sim's index. Taken from the index itself rather than counted from where the lap
+        /// started, so it can't drift (2026-10-03: counting from the car's position on an ACC hotlap out-lap, where the
+        /// index sits on sector 1 until timing starts, labelled the next sectors "S4" and "S5").
+        /// </summary>
+        private int Ordinal(int simIndex) => Math.Max(1, Math.Min(Max, simIndex - Math.Min(_baseIndex, 1) + 1));
+
+        private void Roll()
+        {
+            for (var n = 0; n <= Max; n++)
+            {
+                _last[n] = _current[n];
+                _lastTime[n] = _currentTime[n];
+                _current[n] = PaceState.None;
+                _currentTime[n] = double.NaN;
+            }
+        }
+
+        private double Clock(double lapTime)
+        {
+            if (!double.IsNaN(_previousLapTime) && lapTime < _previousLapTime - 0.5) _clockOffset += _previousLapTime;
+            _previousLapTime = lapTime;
+            return _clockOffset + lapTime;
         }
 
         private void StartSector(Func<int, double> sessionFastest, Func<int, double> gameBest, int incidents)

@@ -21,7 +21,7 @@ from dashlib import (track_map, ABS, ACCENT, BRAKE, CENTER, CLEAR, CURRENT, GUID
 ROOT = Path(__file__).resolve().parent.parent
 NAME = 'TurnTelemetry'
 OUT = ROOT / 'dash' / NAME
-VERSION = '0.2.3'
+VERSION = '0.2.4'
 CONTRACT = 2
 
 W, H = 1920, 1080
@@ -136,6 +136,7 @@ STRIP_H = 154
 
 
 SECTOR_BG = '#14FFFFFF'
+BRAKE_TRACK = '#FF0E100E'   # the Button Box's brake track
 
 
 def limits_dim():
@@ -165,7 +166,12 @@ def lap_strip(items):
     # ACC races report no excursions at all (tyres-out is never filled, laps aren't invalidated): say so.
     items.append(text('Limits unavailable', CX + 200, TOP + 10, 260, 26, 'TRACK LIMITS N/A IN RACE', 16, MUTED)
                  .show_if(f"!isnull({p('Limits.Available')},true)"))
-    items.append(text('Turn source', CX + 400, TOP + 10, CW - 420, 26, '', 16, MUTED, RIGHT).bind_js('Text', (
+    # RESET LAPS (issue: manual game resets): two taps within 3 s; the first turns it into CONFIRM?.
+    armed = p('Reset.Armed')
+    pill(items, 'Reset laps', CX + CW - 132, TOP + 6, 116, 28, 'RESET LAPS', 'TurnTelemetry.ResetSession', MUTED,
+         f"isnull({p('Contract')},0) > 0", text_expr=f"if({armed},'CONFIRM?','RESET LAPS')")
+    items[-2].bind('TextColor', f"if({armed},'{TEXT}','{MUTED}')")   # the pill's caption: white while armed
+    items.append(text('Turn source', CX + 400, TOP + 10, CW - 556, 26, '', 16, MUTED, RIGHT).bind_js('Text', (
         f"if(!$prop('{TT}Caps.LapPosition')) return '';"
         f"var src=$prop('{TT}Turn.Source')||'none'; var n=$prop('{TT}Turn.Count')||0;"
         "if(src==='none') return 'NO TURN DATA · USE THE TURN EDITOR IN THE PLUGIN SETTINGS';"
@@ -179,29 +185,75 @@ def lap_strip(items):
     # Sectors: a segment per sector above the bands, filled with its pace colour (purple session best, green
     # personal best, yellow slower; dimmed = last lap's result until you reach it), with a divider running down
     # through the bands so each turn visibly sits in its sector. Boundaries are learned by the plugin.
+    # Positions are on the strip, which reads Turn 1 -> max (StripLayout). When the sim's line is just before Turn 1 the
+    # sectors line up with the turns and are drawn over them. When it isn't (ACC Silverstone: the line is before
+    # Copse, T9) they'd read S2 | S3 | S1 | S2, so instead (user decision 2026-10-03) they get their own row of separate
+    # boxes in game order S1 . S2 . S3, distinct from the turns, and the turns strip shows only neutral dividers with
+    # S-tags where each sector starts.
+    rotated = f"isnull({p('Strip.Rotated')},false)"
+    count = f"max(1, isnull({p('Sector.Count')},0))"
+    gap = 12
+    box_w = f"({sw} - {gap} * ({count} - 1)) / {count}"
     for n in range(1, MAX_SECTORS + 1):
-        start, end = f"isnull({p(f'Sector.{n}.Start')},-1)", f"isnull({p(f'Sector.{n}.End')},-1)"
         state = f"isnull({p(f'Sector.{n}.State')},'NONE')"
         last = f"isnull({p(f'Sector.{n}.FromLastLap')},false)"
-        items.append(rect(f'Sector {n} segment', sx, sector_y, 2, sector_h, SECTOR_BG, radius_only(3))
-                     .show_if(f'{start} >= 0')
-                     .bind('Left', f'{sx} + {start} * {sw} + 1')
-                     .bind('Width', f'max(2, ({end} - {start}) * {sw} - 2)')
-                     .bind('BackgroundColor', f"if({state}='NONE','{SECTOR_BG}',if({last},{pace_color(state, True)},{pace_color(state)}))"))
-        items.append(text(f'Sector {n} label', sx, sector_y, 200, sector_h, f'S{n}', 15, MUTED, CENTER)
-                     .show_if(f'{start} >= 0')
-                     .bind('Left', f'{sx} + ({start} + {end}) / 2 * {sw} - 100')
+        fill = f"if({state}='NONE','{SECTOR_BG}',if({last},{pace_color(state, True)},{pace_color(state)}))"
+        visible = f"{rotated} && {n} <= isnull({p('Sector.Count')},0)"
+        items.append(rect(f'Sector {n} box', sx, sector_y, 2, sector_h, SECTOR_BG, border(SECTOR_LINE, 1, 4))
+                     .show_if(visible)
+                     .bind('Left', f'{sx} + {n - 1} * ({box_w} + {gap})')
+                     .bind('Width', box_w)
+                     .bind('BackgroundColor', fill))
+        items.append(text(f'Sector {n} box label', sx, sector_y, 2, sector_h, f'S{n}', 15, MUTED, CENTER)
+                     .show_if(visible)
+                     .bind('Left', f'{sx} + {n - 1} * ({box_w} + {gap})')
+                     .bind('Width', box_w)
                      .bind_js('Text', f"var t=$prop('{TT}Sector.{n}.Time'); return t ? 'S{n}   ' + t : 'S{n}';")
                      .bind('TextColor', f"if({state}='NONE','{MUTED}',if({last},'{TEXT}','{INK}'))"))
-        if n > 1:
-            items.append(rect(f'Sector {n} divider', sx, sector_y, 2, sy + sh - sector_y, SECTOR_LINE)
-                         .show_if(f'{start} >= 0')
-                         .bind('Left', f'{sx} + {start} * {sw} - 1'))
+        items.append(text(f'Sector {n} tag', sx, sy + 2, 30, 16, f'S{n}', 12, MUTED, LEFT)
+                     .show_if(f"{rotated} && isnull({p(f'Sector.{n}.StripStart')},-1) >= 0")
+                     .bind('Left', f"{sx} + isnull({p(f'Sector.{n}.StripStart')},0) * {sw} + 4"))
+
+    for n in range(1, MAX_SECTORS + 1):
+        start, end = f"isnull({p(f'Sector.{n}.StripStart')},-1)", f"isnull({p(f'Sector.{n}.StripEnd')},-1)"
+        state = f"isnull({p(f'Sector.{n}.State')},'NONE')"
+        last = f"isnull({p(f'Sector.{n}.FromLastLap')},false)"
+        fill = f"if({state}='NONE','{SECTOR_BG}',if({last},{pace_color(state, True)},{pace_color(state)}))"
+        items.append(rect(f'Sector {n} segment', sx, sector_y, 2, sector_h, SECTOR_BG, radius_only(3))
+                     .show_if(f'!{rotated} && {start} >= 0')
+                     .bind('Left', f'{sx} + {start} * {sw} + 1')
+                     .bind('Width', f'max(2, if({end} >= {start}, {end} - {start}, 1 - {start}) * {sw} - 2)')
+                     .bind('BackgroundColor', fill))
+        items.append(rect(f'Sector {n} wrap', sx, sector_y, 2, sector_h, SECTOR_BG, radius_only(3))
+                     .show_if(f'!{rotated} && {start} >= 0 && {end} < {start}')
+                     .bind('Width', f'max(2, {end} * {sw} - 1)')
+                     .bind('BackgroundColor', fill))
+        items.append(text(f'Sector {n} label', sx, sector_y, 200, sector_h, f'S{n}', 15, MUTED, CENTER)
+                     .show_if(f'!{rotated} && {start} >= 0')
+                     .bind('Left', f"{sx} + isnull({p(f'Sector.{n}.StripCentre')},0) * {sw} - 100")
+                     .bind_js('Text', f"var t=$prop('{TT}Sector.{n}.Time'); return t ? 'S{n}   ' + t : 'S{n}';")
+                     .bind('TextColor', f"if({state}='NONE','{MUTED}',if({last},'{TEXT}','{INK}'))"))
+        # A divider at every sector start except the strip's left edge (S1's start is mid-strip when rotated).
+        items.append(rect(f'Sector {n} divider', sx, sector_y, 2, sy + sh - sector_y, SECTOR_LINE)
+                     .show_if(f'!{rotated} && {start} > 0.002')
+                     .bind('Left', f'{sx} + {start} * {sw} - 1'))
+        items.append(rect(f'Sector {n} strip divider', sx, sy, 2, sh, SECTOR_LINE)
+                     .show_if(f'{rotated} && {start} > 0.002')
+                     .bind('Left', f'{sx} + {start} * {sw} - 1'))
 
     for i in range(MAX_BANDS):
         b = f'Turn.Band.{i:02d}'
-        start, end = f"isnull({p(b + '.Start')},-1)", f"isnull({p(b + '.End')},-1)"
-        fill = f"if({p(b + '.IsCurrent')},'{BAND_CURRENT}','{BAND}')"
+        start, end = f"isnull({p(b + '.StripStart')},-1)", f"isnull({p(b + '.StripEnd')},-1)"
+        # Per-turn delta vs the best lap (issue #12): green = time gained in this corner, yellow = lost; dimmed =
+        # last lap's result until the corner is driven again. The corner you're in stays blue.
+        delta = f"isnull({p(b + '.DeltaState')},'NONE')"
+        delta_last = f"isnull({p(b + '.DeltaFromLastLap')},false)"
+        def delta_fill(dim):
+            def c(argb):
+                return '#59' + argb[3:] if dim else argb
+            return f"if({delta}='GAIN','{c(PACE_PB)}',if({delta}='LOSS','{c(PACE_SLOWER)}','{BAND}'))"
+        fill = (f"if({p(b + '.IsCurrent')},'{BAND_CURRENT}',"
+                f"if({delta_last},{delta_fill(True)},{delta_fill(False)}))")
         # Main segment, and the part after start/finish for a turn that wraps across the line.
         items.append(rect(f'Band {i:02d}', sx, sy, 2, sh, BAND)
                      .show_if(f'{start} >= 0')
@@ -213,6 +265,26 @@ def lap_strip(items):
                      .bind('Width', f'max(2, {end} * {sw})')
                      .bind('BackgroundColor', fill))
         centre = f'(({start} + if({end} >= {start}, {end}, {end} + 1)) / 2) % 1'
+        width_px = f'if({end} >= {start}, {end} - {start}, 1 - {start}) * {sw}'
+        # Full delta ("+0.11") on wide bands; on narrow ones the sign and the digits are stacked so the digits get the
+        # band's full width ("+" over ".11"; user request 2026-10-03).
+        shown = f"{start} >= 0 && {delta} <> 'NONE' && !{p(b + '.IsCurrent')}"
+        items.append(text(f'Band {i:02d} delta', sx, sy + 19, 60, 22, '', 13, INK, CENTER)
+                     .show_if(f"{shown} && {width_px} >= 34")
+                     .bind('Left', f'{sx} + {centre} * {sw} - 30')
+                     .bind('Text', f"isnull({p(b + '.DeltaText')},'')")
+                     .bind('TextColor', f"if({delta_last},'{TEXT}','{INK}')"))
+        narrow = f"{shown} && {width_px} >= 18 && {width_px} < 34"
+        items.append(text(f'Band {i:02d} delta sign', sx, sy + 9, 40, 14, '', 12, INK, CENTER)
+                     .show_if(narrow)
+                     .bind('Left', f'{sx} + {centre} * {sw} - 20')
+                     .bind('Text', f"isnull({p(b + '.DeltaSign')},'')")
+                     .bind('TextColor', f"if({delta_last},'{TEXT}','{INK}')"))
+        items.append(text(f'Band {i:02d} delta digits', sx, sy + 22, 40, 16, '', 12, INK, CENTER)
+                     .show_if(narrow)
+                     .bind('Left', f'{sx} + {centre} * {sw} - 20')
+                     .bind('Text', f"isnull({p(b + '.DeltaDigits')},'')")
+                     .bind('TextColor', f"if({delta_last},'{TEXT}','{INK}')"))
         # Track limits: a red bar along the band's foot (bright this lap, dim earlier this session); the number
         # turns red for an excursion this lap unless it's the turn you're in (blue wins there).
         lap_hits, session_hits = f"isnull({p(b + '.LimitsLap')},0)", f"isnull({p(b + '.LimitsSession')},0)"
@@ -230,7 +302,7 @@ def lap_strip(items):
     # White, not the accent: lime would read as a pace colour against the sector fills.
     items.append(rect('Lap cursor', sx, sector_y, 3, sy + sh - sector_y, TEXT)
                  .show_if(p('Caps.LapPosition'))
-                 .bind('Left', f"{sx} + isnull({p('Live.LapPos')},0) * {sw} - 1"))
+                 .bind('Left', f"{sx} + isnull({p('Live.StripPos')},0) * {sw} - 1"))
     items.append(text('No lap position', sx, sy, sw, sh, 'THIS SIM REPORTS NO LAP POSITION', 20, MUTED, CENTER)
                  .show_if(f"!{p('Caps.LapPosition')}"))
     items.append(text('Unsupported notice', sx, sy, sw, sh, 'NO TURN DATA FOR THIS TRACK', 22, CURRENT, CENTER)
@@ -385,6 +457,34 @@ def tyres(items):
         items.append(text(f'{corner} pressure unit', x, y + th + 54, tw, 22, 'PSI', 15, MUTED, CENTER)
                      .bind('Text', f"isnull({p('Tyre.PressureUnit')},'psi')"))
 
+        # Brake temperature (user request 2026-10-03), styled after the Button Box (button-box-neon): a bar on the
+        # outer side of the tyre, outlined in the band colour (blue < 200 °C, green to 650, yellow to 800, red), filled
+        # from the bottom in a darker shade of it over 0-1000 °C, with the number in white so it reads wherever the
+        # fill ends. Hidden until the sim reports a brake temperature.
+        bw, inset = 34, 2
+        bx = x - bw - 10 if corner in ('FL', 'RL') else x + tw + 10
+        b = f'Brake.{corner}'
+        fill = f"isnull({p(b + '.Fill')},0)"
+        color = p(b + '.Color' + TYRE_COLOR_SUFFIX)
+        reported = f"isnull({p('Brake.Reported')},false)"
+        inner_h = th - 2 * inset
+        items.append(rect(f'{corner} brake outline', bx, y, bw, th, NODATA, radius_only(7))
+                     .show_if(reported)
+                     .bind('BackgroundColor', f"isnull({color},'{NODATA}')"))
+        items.append(rect(f'{corner} brake track', bx + inset, y + inset, bw - 2 * inset, inner_h, BRAKE_TRACK,
+                          radius_only(5)).show_if(reported))
+        items.append(rect(f'{corner} brake fill', bx + inset, y + inset, bw - 2 * inset, inner_h, NODATA, radius_only(5))
+                     .show_if(f'{reported} && {fill} > 0')
+                     .bind('Top', f'{y + inset} + {inner_h} * (1 - {fill})')
+                     .bind('Height', f'max(2, {inner_h} * {fill})')
+                     .bind_js('BackgroundColor', f"var c=$prop('{TT}{b}.Color{TYRE_COLOR_SUFFIX}')||'{NODATA}';"
+                                                 "return '#66' + c.substring(3);"))
+        items.append(text(f'{corner} brake temp', bx - 6, y + th / 2 - 12, bw + 12, 24, '', 14, '#FFFFFFFF', CENTER)
+                     .show_if(reported)
+                     .bind_js('Text', f"var t=$prop('{TT}{b}.Temp'); return t>0 ? Math.round(t) : '';"))
+        items.append(text(f'{corner} brake label', bx - 6, y + th + 2, bw + 12, 16, 'BRK', 11, MUTED, CENTER)
+                     .show_if(reported))
+
         wear_cap = p('Caps.TyreWear')
         items.append(rect(f'{corner} wear track', x, y + th + 86, tw, 6, WEAR_TRACK, radius_only(3)).show_if(wear_cap))
         items.append(rect(f'{corner} wear fill', x, y + th + 86, tw, 6, TEXT, radius_only(3))
@@ -505,7 +605,7 @@ def build(theme):
     return out
 
 
-# Real in-game screenshot of the released dashboard (ACC Monza, 2026-10-03, after the font fix), used as its SimHub thumbnail.
+# Real in-game screenshot of the released dashboard (ACC Silverstone, 2026-10-03: sector row, corner deltas, brake bars), used as its SimHub thumbnail.
 SCREENSHOT = ROOT / 'docs' / 'images' / 'screenshot-dashboard.png'
 
 

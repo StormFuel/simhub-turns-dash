@@ -38,6 +38,11 @@ namespace TurnTelemetryHost
             P("Live.TC", () => e.LastFrame.Tc);
             P("Live.ABS", () => e.LastFrame.Abs);
             P("Live.LapPos", () => e.LastFrame.LapPos);
+            // The turns strip reads Turn 1 → max; these are positions on it (StripLayout).
+            P("Strip.Origin", () => e.StripOrigin);
+            // Rotated: the sim's sectors don't read S1 -> S3 along the strip, so the dashboard shows them as their own row.
+            P("Strip.Rotated", () => e.StripOrigin > 0);
+            P("Live.StripPos", () => StripLayout.ToStrip(e.LastFrame.LapPos, e.StripOrigin));
             P("Live.InTurn", () => e.Turn.Current != null);
 
             // Turn state
@@ -59,10 +64,18 @@ namespace TurnTelemetryHost
                 TurnDefinition Band() => index < e.Catalog.Turns.Count ? e.Catalog.Turns[index] : null;
                 P($"Turn.Band.{index:00}.Start", () => Band()?.Start ?? -1);
                 P($"Turn.Band.{index:00}.End", () => Band()?.End ?? -1);
+                P($"Turn.Band.{index:00}.StripStart", () => Band() == null ? -1 : StripLayout.ToStrip(Band().Start, e.StripOrigin));
+                P($"Turn.Band.{index:00}.StripEnd", () => Band() == null ? -1 : StripLayout.EndToStrip(Band().End, e.StripOrigin));
                 P($"Turn.Band.{index:00}.Label", () => Band()?.Label ?? "");
                 P($"Turn.Band.{index:00}.IsCurrent", () => Band() != null && ReferenceEquals(Band(), e.Turn.Current));
                 P($"Turn.Band.{index:00}.Sector", () => Band() == null ? 0 : e.Sectors.SectorAt(Band().Start));
                 P($"Turn.Band.{index:00}.LimitsLap", () => e.Limits.ThisLap(Band()));
+                // Time gained/lost in this corner vs the best lap (GAIN green / LOSS yellow), last lap's until reached.
+                P($"Turn.Band.{index:00}.DeltaState", () => e.TurnDeltas.State(index).ToString().ToUpperInvariant());
+                P($"Turn.Band.{index:00}.DeltaText", () => e.TurnDeltas.Text(index));
+                P($"Turn.Band.{index:00}.DeltaSign", () => e.TurnDeltas.Sign(index));
+                P($"Turn.Band.{index:00}.DeltaDigits", () => e.TurnDeltas.ShortDigits(index));
+                P($"Turn.Band.{index:00}.DeltaFromLastLap", () => e.TurnDeltas.FromLastLap(index));
                 P($"Turn.Band.{index:00}.LimitsSession", () => e.Limits.ThisSession(Band()));
             }
 
@@ -74,6 +87,10 @@ namespace TurnTelemetryHost
                 var n = i;
                 P($"Sector.{n}.Start", () => e.Sectors.Start(n));
                 P($"Sector.{n}.End", () => e.Sectors.End(n));
+                P($"Sector.{n}.StripStart", () => StripLayout.ToStrip(e.Sectors.Start(n), e.StripOrigin));
+                P($"Sector.{n}.StripEnd", () => StripLayout.EndToStrip(e.Sectors.End(n), e.StripOrigin));
+                P($"Sector.{n}.StripCentre", () => StripLayout.LabelCentre(
+                    StripLayout.ToStrip(e.Sectors.Start(n), e.StripOrigin), StripLayout.EndToStrip(e.Sectors.End(n), e.StripOrigin)));
                 P($"Sector.{n}.State", () => e.SectorTimes.State(n).ToString().ToUpperInvariant());
                 P($"Sector.{n}.FromLastLap", () => e.SectorTimes.FromLastLap(n));
                 P($"Sector.{n}.Time", () => double.IsNaN(e.SectorTimes.Time(n)) ? "" : StandingsBoard.FormatTime(e.SectorTimes.Time(n)));
@@ -124,6 +141,18 @@ namespace TurnTelemetryHost
                 P(n + ".WearColorNeon", () => corner.NeonWear);
             }
 
+            // Brakes (temperature in SimHub's unit, colour from the preset's brake window, bar fill 0..1)
+            P("Brake.Reported", () => e.Tyres.BrakesReported);
+            for (var i = 0; i < 4; i++)
+            {
+                var brake = e.Tyres.Brakes[i];
+                var n = "Brake." + TyreCorner.Names[i];
+                P(n + ".Temp", () => brake.Temp);
+                P(n + ".Color", () => brake.Color);
+                P(n + ".ColorNeon", () => brake.NeonColor);
+                P(n + ".Fill", () => brake.Fill);
+            }
+
             // Car settings the sim adapter reads (null / "N/A" when the sim doesn't report them)
             P<object>("Car.TCCut", () => e.TcCut);
             P<object>("Car.Wipers", () => e.Wipers);
@@ -152,6 +181,9 @@ namespace TurnTelemetryHost
                 P(n + "BestDelta", () => row.Visible ? row.BestDelta : "");
                 P(n + "Gap", () => row.Visible ? row.Gap : "");
             }
+
+            // RESET LAPS: armed after the first tap, waiting for the confirming second one
+            P("Reset.Armed", () => e.ResetArmed(plugin.ClockSeconds));
 
             // Recorder
             P("Recorder.Status", () => e.RecorderStatus);

@@ -15,6 +15,17 @@ namespace TurnTelemetry.Core.Tyres
         [JsonProperty("match")] public MatchRule Match = new MatchRule();
         [JsonProperty("temp")] public TempWindow Temp = new TempWindow();
         [JsonProperty("pressure")] public PressureWindow Pressure;
+        /// <summary>Brake disc temperature window (°C); null uses <see cref="DefaultBrake"/>.</summary>
+        [JsonProperty("brake")] public TempWindow Brake;
+
+        /// <summary>
+        /// Brake window when a preset has none: blue below 200 °C, green to 650, yellow to 800, red from 800. These are
+        /// the thresholds of the Button Box template (via the button-box-neon dashboard), used for every sim.
+        /// </summary>
+        public static readonly TempWindow DefaultBrake = new TempWindow { Cold = 200, OptLow = 200, OptHigh = 650, Hot = 800 };
+
+        /// <summary>Brake bars fill from 0 to this temperature (°C), as on the Button Box.</summary>
+        public const double BrakeFillMaxCelsius = 1000;
 
         public sealed class MatchRule
         {
@@ -232,6 +243,16 @@ namespace TurnTelemetry.Core.Tyres
         }
     }
 
+    /// <summary>One wheel's brake: temperature in SimHub's unit, colour from the preset's brake window, bar fill.</summary>
+    public sealed class BrakeCorner
+    {
+        public double Temp;
+        public string Color = TyreColors.NoData;
+        public string NeonColor = TyrePalette.Neon.NoData;
+        /// <summary>0 at 0 °C to 1 at <see cref="TyrePreset.BrakeFillMaxCelsius"/>.</summary>
+        public double Fill;
+    }
+
     public sealed class TyreCorner
     {
         public static readonly string[] Names = { "FL", "FR", "RL", "RR" };
@@ -262,6 +283,9 @@ namespace TurnTelemetry.Core.Tyres
         public const double ZoneSpreadCelsius = 0.5;
 
         public TyreCorner[] Corners { get; } = { new TyreCorner(), new TyreCorner(), new TyreCorner(), new TyreCorner() };
+        public BrakeCorner[] Brakes { get; } = { new BrakeCorner(), new BrakeCorner(), new BrakeCorner(), new BrakeCorner() };
+        /// <summary>True once the sim has reported a brake temperature this session (else the dashboard hides the bars).</summary>
+        public bool BrakesReported { get; private set; }
         public TyrePreset Preset { get; private set; } = TyrePresetMatcher.Fallback;
         public string Compound { get; private set; }
         public string PressureUnit { get; set; } = "psi";
@@ -270,7 +294,11 @@ namespace TurnTelemetry.Core.Tyres
         /// <summary>Latched once inner/middle/outer differ on any tyre this session; until then draw one colour per tyre.</summary>
         public bool ZonesDetected { get; private set; }
 
-        public void ResetSession() => ZonesDetected = false;
+        public void ResetSession()
+        {
+            ZonesDetected = false;
+            BrakesReported = false;
+        }
 
         public void SetPreset(TyrePreset preset, string compound)
         {
@@ -319,6 +347,15 @@ namespace TurnTelemetry.Core.Tyres
                     : Math.Max(0, Math.Min(100, wear == WearMeaning.Used ? 100 - r.Wear : r.Wear));
                 c.WearColor = TyreColors.ForWear(c.WearRemaining);
                 c.NeonWear = TyreColors.ForWear(c.WearRemaining, TyrePalette.Neon);
+
+                var brake = Brakes[i];
+                var brakeWindow = Preset.Brake ?? TyrePreset.DefaultBrake;
+                var brakeC = C(s.BrakeTemps[i]);
+                if (brakeC > 0) BrakesReported = true;
+                brake.Temp = brakeC > 0 ? s.BrakeTemps[i] : 0;
+                brake.Color = TyreColors.ForTemperature(brakeC, brakeWindow);
+                brake.NeonColor = TyreColors.ForTemperature(brakeC, brakeWindow, TyrePalette.Neon);
+                brake.Fill = brakeC <= 0 ? 0 : Math.Max(0, Math.Min(1, brakeC / TyrePreset.BrakeFillMaxCelsius));
             }
         }
 

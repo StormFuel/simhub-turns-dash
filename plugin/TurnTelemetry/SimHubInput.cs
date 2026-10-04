@@ -42,6 +42,8 @@ namespace TurnTelemetryHost
             s.LastLapTime = d.LastLapTime;
             s.LapInvalidated = d.LapInvalidated;
             s.CurrentSectorIndex = d.CurrentSectorIndex;
+            s.IsSessionRestart = d.IsSessionRestart;
+            s.SessionOdo = d.SessionOdo;
             s.BestSectors[0] = d.Sector1BestTime?.TotalSeconds ?? 0;
             s.BestSectors[1] = d.Sector2BestTime?.TotalSeconds ?? 0;
             s.BestSectors[2] = d.Sector3BestTime?.TotalSeconds ?? 0;
@@ -53,6 +55,10 @@ namespace TurnTelemetryHost
             s.AbsLevel = d.ABSLevel;
 
             s.TyrePressureUnit = d.TyrePressureUnit;
+            s.BrakeTemps[0] = d.BrakeTemperatureFrontLeft;
+            s.BrakeTemps[1] = d.BrakeTemperatureFrontRight;
+            s.BrakeTemps[2] = d.BrakeTemperatureRearLeft;
+            s.BrakeTemps[3] = d.BrakeTemperatureRearRight;
             s.TemperatureUnit = d.TemperatureUnit;
 
             Tyre(s.Tyres[0], d.TyreTemperatureFrontLeftInner, d.TyreTemperatureFrontLeftMiddle, d.TyreTemperatureFrontLeftOuter,

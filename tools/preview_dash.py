@@ -34,6 +34,17 @@ TURNS = [(0.03, 0.06), (0.11, 0.14), (0.18, 0.20), (0.26, 0.30), (0.36, 0.38), (
 CURRENT_TURN = 6
 SECTORS = [(0, 0.33), (0.33, 0.69), (0.69, 1)]
 CURRENT_SECTOR = 2
+# Sample in the rotated layout (ACC Silverstone shape): sectors start mid-strip, so they get their own row.
+ROTATED = True
+# Per-turn deltas in the sample: turns 1-6 driven this lap, 8-12 last lap's (dimmed); turn 7 is current.
+DELTA_SAMPLE = {0: ('GAIN', '-0.04', False), 1: ('LOSS', '+0.11', False), 2: ('GAIN', '-0.02', False),
+                3: ('LOSS', '+0.21', False), 4: ('GAIN', '-0.08', False), 5: ('GAIN', '-0.03', False),
+                7: ('LOSS', '+0.06', True), 8: ('GAIN', '-0.05', True), 9: ('LOSS', '+0.02', True),
+                10: ('GAIN', '-0.01', True), 11: ('LOSS', '+0.09', True)}
+ROTATED_STARTS = {1: 0.46, 2: 0.77, 3: 0.17}
+# Brakes in the sample (°F like the rest; fill over 0-1000 °C): fronts in the window, one rear still cold.
+BRAKE_SAMPLE = {'FL': (0.42, '#FF39FF14', '780'), 'FR': (0.44, '#FF39FF14', '815'),
+                'RL': (0.21, '#FF39FF14', '410'), 'RR': (0.17, '#FF00B3FF', '310')}
 # Track limits: turn 3 this lap, turn 9 earlier in the session.
 LIMITS_SAMPLE = {2: 'lap', 8: 'session'}
 # Sector sample: S1 a personal best this lap, S2 in progress (last lap's yellow, dimmed), S3 last lap's purple, dimmed.
@@ -171,6 +182,19 @@ def render_item(item, images):
         return (f'<div style="position:absolute;left:{420 + s0 * 1060}px;top:{top}px;width:{(e0 - s0) * 1060}px;'
                 f'height:{h}px;background:#59D7FF"></div>')
     sx, sw = 420, 1060
+    m = re.match(r'Band (\d\d) delta$', name)
+    if m:
+        i = int(m.group(1))
+        if i not in DELTA_SAMPLE or i == CURRENT_TURN or i >= len(TURNS):
+            return ''
+        s0, e0 = TURNS[i]
+        if (e0 - s0 if e0 >= s0 else 1 - s0) * sw < 34:
+            return ''
+        state, label, last = DELTA_SAMPLE[i]
+        centre = ((s0 + (e0 if e0 >= s0 else e0 + 1)) / 2) % 1
+        return (f'<div style="position:absolute;left:{sx + centre * sw - 30}px;top:{top}px;width:60px;height:{h}px;'
+                f'display:flex;align-items:center;justify-content:center;font-family:&quot;Oswald&quot;;font-weight:700;'
+                f'font-size:{item["FontSize"]}px;color:{"#FFFFFF" if last else "#000000"}">{label}</div>')
     m = re.match(r'Band (\d\d) limits$', name)
     if m:
         i = int(m.group(1))
@@ -197,8 +221,30 @@ def render_item(item, images):
                     f'justify-content:center">{i + 1}</div>')
         width = (e - s if e >= s else 1 - s) * sw
         fill = (THEME['BAND_CURRENT'] if THEME else '#B32F7DFF') if i == CURRENT_TURN else (THEME['BAND'] if THEME else '#1FFFFFFF')
+        if i != CURRENT_TURN and i in DELTA_SAMPLE:
+            state, _, last = DELTA_SAMPLE[i]
+            fill = ('#59' if last else '#FF') + ('2EE66B' if state == 'GAIN' else 'FFD000')
         return (f'<div style="position:absolute;left:{sx + s * sw}px;top:{top}px;width:{width}px;height:{h}px;'
                 f'background:{css_color(fill)}"></div>')
+    m = re.match(r'Sector (\d) (box|box label|tag|strip divider)$', name)
+    if m:
+        n = int(m.group(1))
+        if not ROTATED or n > len(SECTORS):
+            return ''
+        bw = (sw - 12 * (len(SECTORS) - 1)) / len(SECTORS)
+        if m.group(2) in ('box', 'box label'):
+            left, w = sx + (n - 1) * (bw + 12), bw
+            if m.group(2) == 'box':
+                item = dict(item, BackgroundColor=SECTOR_SAMPLE[n][0])
+            else:
+                item = dict(item, TextColor=SECTOR_SAMPLE[n][1], Text=SECTOR_SAMPLE[n][2])
+        else:
+            start = ROTATED_STARTS[n]
+            if m.group(2) == 'strip divider' and start <= 0.002:
+                return ''
+            left = sx + start * sw + (4 if m.group(2) == 'tag' else -1)
+    if ROTATED and re.match(r'Sector \d (segment|label|divider|wrap)$', name):
+        return ''
     m = re.match(r'Sector (\d) (segment|label|divider)$', name)
     if m:
         n = int(m.group(1))
@@ -214,6 +260,16 @@ def render_item(item, images):
         else:
             left = sx + (s0 + e0) / 2 * sw - 100
             item = dict(item, TextColor=SECTOR_SAMPLE[n][1], Text=SECTOR_SAMPLE[n][2])
+    m = re.match(r'(FL|FR|RL|RR) brake (outline|fill|temp)$', name)
+    if m:
+        fill, color, temp = BRAKE_SAMPLE[m.group(1)]
+        if m.group(2) == 'outline':
+            item = dict(item, BackgroundColor=color)
+        elif m.group(2) == 'fill':
+            top, h = top + h * (1 - fill), h * fill
+            item = dict(item, BackgroundColor='#66' + color[3:])
+        else:
+            TEXT[name] = temp
     if name == 'Lap cursor':
         left = sx + LAP_POS * sw - 1
     if name.endswith(' single'):

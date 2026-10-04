@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using TurnTelemetry.Core.Engine;
+using TurnTelemetry.Core.Lap;
 using TurnTelemetry.Core.Turns;
 using Xunit;
 
@@ -38,6 +39,53 @@ namespace TurnTelemetry.Tests
                 Assert.Equal(turns, result.Turns.Count);
                 Assert.Equal(turns, result.Turns.Select(t => t.Label).Distinct().Count());
                 Assert.All(result.Turns, t => Assert.False(string.IsNullOrEmpty(t.Name)));
+            }
+        }
+
+        /// <summary>
+        /// The strip reads Turn 1 → 18 while ACC's sectors start at its line before Copse. With the sector boundaries
+        /// learned in the user's session (2026-10-03), every turn must sit in the same sector on the strip as by lap
+        /// position, and the membership must match what the game shows: 9–14 in S1, 15–18 and 1–4 in S2, 5–8 in S3.
+        /// </summary>
+        [Fact]
+        public void Acc_silverstone_strip_reads_turn_1_first_and_turns_keep_their_game_sector()
+        {
+            using (var dir = new TempDir())
+            {
+                var engine = new TelemetryEngine(dir.Path, Bundle);
+                engine.Update(EngineTestsAccess.Snapshot("Silverstone", 0.005), new FakeRaw(), 0);
+                var turns = engine.Catalog.Turns;
+                var origin = engine.StripOrigin;
+                var turnOne = turns.Single(t => t.Label == "1");
+                var turn18 = turns.Single(t => t.Label == "18");
+                Assert.InRange(origin, turn18.End, turnOne.Start);
+
+                var order = turns.OrderBy(t => StripLayout.ToStrip(t.Start, origin)).Select(t => t.Label).ToList();
+                Assert.Equal(Enumerable.Range(1, 18).Select(i => i.ToString()), order);
+
+                var map = new SectorMap();
+                map.Load("0.31724\n0.70813");
+                int StripSector(double stripPos)
+                {
+                    for (var n = 1; n <= map.Count; n++)
+                    {
+                        var s = StripLayout.ToStrip(map.Start(n), origin);
+                        var e = StripLayout.EndToStrip(map.End(n), origin);
+                        if (e >= s ? stripPos >= s && stripPos < e : stripPos >= s || stripPos < e) return n;
+                    }
+                    return 0;
+                }
+                foreach (var t in turns)
+                    Assert.True(map.SectorAt(t.Start) == StripSector(StripLayout.ToStrip(t.Start, origin)), $"turn {t.Label}");
+
+                int Sector(string label) => map.SectorAt(turns.Single(t => t.Label == label).Start);
+                Assert.All(new[] { "9", "10", "14" }, l => Assert.Equal(1, Sector(l)));
+                Assert.All(new[] { "15", "18", "1", "4" }, l => Assert.Equal(2, Sector(l)));
+                Assert.All(new[] { "5", "6", "8" }, l => Assert.Equal(3, Sector(l)));
+
+                // S1 starts mid-strip at the line; S2 is the sector that crosses the strip's ends.
+                Assert.Equal(1 - origin, StripLayout.ToStrip(map.Start(1), origin), 6);
+                Assert.True(StripLayout.EndToStrip(map.End(2), origin) < StripLayout.ToStrip(map.Start(2), origin));
             }
         }
 

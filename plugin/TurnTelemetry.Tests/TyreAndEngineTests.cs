@@ -155,6 +155,45 @@ namespace TurnTelemetry.Tests
             Assert.Equal(code, TemperatureUnits.Code(unit));
         }
 
+        /// <summary>Button Box thresholds: blue below 200 °C, green to 650, yellow to 800, red from 800.</summary>
+        [Theory]
+        [InlineData("Celcius", 0, 0)]
+        [InlineData("Celcius", 25, 1)]          // ambient: cold (blue)
+        [InlineData("Celcius", 199, 1)]
+        [InlineData("Celcius", 200, 2)]         // ideal (green) from 200
+        [InlineData("Celcius", 650, 2)]
+        [InlineData("Celcius", 700, 3)]         // above ideal (yellow)
+        [InlineData("Celcius", 800, 4)]         // overheated (red) from 800
+        [InlineData("Fahrenheit", 1652, 4)]     // 900 C
+        [InlineData("Kelvin", 673.15, 2)]       // 400 C
+        public void Brakes_are_coloured_with_the_button_box_thresholds_in_any_unit(string unit, double reported, int state)
+        {
+            var model = new TyreModel();
+            model.SetPreset(new TyrePreset { Temp = Window }, null);
+            var s = new GameSnapshot { TemperatureUnit = unit };
+            s.BrakeTemps[0] = reported;
+            model.Update(s, WearMeaning.Remaining);
+
+            var expected = new[] { TyreColors.NoData, TyreColors.Cold, TyreColors.Optimal, TyreColors.Warm, TyreColors.Hot }[state];
+            Assert.Equal(expected, model.Brakes[0].Color);
+            Assert.Equal(state == 0 ? 0 : reported, model.Brakes[0].Temp, 6);
+            Assert.Equal(state != 0, model.BrakesReported);
+            Assert.InRange(model.Brakes[0].Fill, 0, 1);
+        }
+
+        [Fact]
+        public void Brake_bars_fill_from_0_to_1000_celsius()
+        {
+            var model = new TyreModel();
+            model.SetPreset(new TyrePreset { Temp = Window }, null);
+            var s = new GameSnapshot { TemperatureUnit = "Celcius" };
+            s.BrakeTemps[0] = 400;
+            s.BrakeTemps[1] = 1200;
+            model.Update(s, WearMeaning.Remaining);
+            Assert.Equal(0.4, model.Brakes[0].Fill, 6);
+            Assert.Equal(1, model.Brakes[1].Fill, 6);
+        }
+
         [Fact]
         public void Zones_are_detected_only_when_inner_middle_outer_differ()
         {
@@ -205,6 +244,79 @@ namespace TurnTelemetry.Tests
             TrackPositionPercent = pos,
             Throttle = 100,
         };
+
+        [Theory]
+        [InlineData("flag")]
+        [InlineData("odo")]
+        [InlineData("laps")]
+        public void A_restart_from_the_game_menu_resets_the_session(string signal)
+        {
+            using (var dir = new TempDir())
+            {
+                var raw = new FakeRaw();
+                var engine = new TelemetryEngine(dir.Path, new FakeBundle());
+                var s = AccSnapshot(0.3);
+                s.SessionOdo = 4200;
+                s.CompletedLaps = 2;
+                engine.Update(s, raw, 0);
+                engine.Update(s, raw, 1);
+                engine.Log.Add("marker");
+
+                var restarted = AccSnapshot(0.3);   // same game, track, car, type and session id
+                restarted.SessionOdo = signal == "odo" ? 15 : 4210;
+                restarted.CompletedLaps = signal == "laps" ? 0 : 2;
+                restarted.IsSessionRestart = signal == "flag";
+                engine.Update(restarted, raw, 2);
+
+                var log = engine.Log.Snapshot();
+                Assert.Contains(log.SkipWhile(l => !l.EndsWith("marker")), l => l.Contains("session:") && l.Contains("restarted:"));
+            }
+        }
+
+        [Fact]
+        public void Reset_laps_needs_a_confirming_second_tap_within_3_seconds()
+        {
+            using (var dir = new TempDir())
+            {
+                var raw = new FakeRaw();
+                var engine = new TelemetryEngine(dir.Path, new FakeBundle());
+                Assert.Equal("no session to reset", engine.RequestReset(0));
+                engine.Update(AccSnapshot(0.3), raw, 0);
+                int Sessions() => engine.Log.Snapshot().Count(l => l.Contains("session:"));
+
+                Assert.Equal("reset armed: tap again to confirm", engine.RequestReset(10));
+                Assert.True(engine.ResetArmed(11));
+                Assert.Equal(1, Sessions());
+                Assert.Equal("lap data reset", engine.RequestReset(12));
+                Assert.Equal(2, Sessions());
+                Assert.Contains(engine.Log.Snapshot(), l => l.Contains("reset from the dashboard"));
+                Assert.False(engine.ResetArmed(12.5));
+
+                // A second tap too late just arms it again.
+                engine.RequestReset(20);
+                Assert.Equal("reset armed: tap again to confirm", engine.RequestReset(24));
+                Assert.Equal(2, Sessions());
+            }
+        }
+
+        [Fact]
+        public void Normal_driving_does_not_count_as_a_restart()
+        {
+            using (var dir = new TempDir())
+            {
+                var raw = new FakeRaw();
+                var engine = new TelemetryEngine(dir.Path, new FakeBundle());
+                for (var i = 0; i < 50; i++)
+                {
+                    var s = AccSnapshot(0.1 + i * 0.01);
+                    s.SessionOdo = 1000 + i * 50;
+                    s.CompletedLaps = i / 20;
+                    s.IsSessionRestart = true;     // set from the start and left set: not a new restart
+                    engine.Update(s, raw, i);
+                }
+                Assert.Equal(1, engine.Log.Snapshot().Count(l => l.Contains("session:")));
+            }
+        }
 
         [Fact]
         public void Curated_turns_drive_next_and_current_and_steering_comes_from_raw()

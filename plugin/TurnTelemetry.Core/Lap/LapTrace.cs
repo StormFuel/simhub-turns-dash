@@ -31,6 +31,8 @@ namespace TurnTelemetry.Core.Lap
         private readonly double[,] _interpolated;
         private readonly bool[] _hasInterpolated;
         private readonly LapEvents[] _events;
+        /// <summary>Sim lap time (s) when the car first entered each bin; NaN until it does. Used for per-turn deltas.</summary>
+        private readonly double[] _entryTime;
 
         public LapTrace(int bins)
         {
@@ -41,7 +43,12 @@ namespace TurnTelemetry.Core.Lap
             _interpolated = new double[ChannelCount, bins];
             _hasInterpolated = new bool[bins];
             _events = new LapEvents[bins];
+            _entryTime = new double[bins];
+            for (var i = 0; i < bins; i++) _entryTime[i] = double.NaN;
         }
+
+        /// <summary>Lap time (s) when the car entered <paramref name="bin"/>, or NaN.</summary>
+        public double EntryTime(int bin) => _entryTime[bin];
 
         public int Bins { get; }
         public int VisitedBins { get; private set; }
@@ -76,6 +83,7 @@ namespace TurnTelemetry.Core.Lap
 
         internal void Add(int bin, in Frame f)
         {
+            if (double.IsNaN(_entryTime[bin])) _entryTime[bin] = f.CurrentLapTime.TotalSeconds;
             if (_count[bin] == 0) VisitedBins++;
             _count[bin]++;
             _sum[(int)Channel.Throttle, bin] += f.Throttle;
@@ -98,6 +106,8 @@ namespace TurnTelemetry.Core.Lap
                 _interpolated[(int)Channel.Brake, bin] = Lerp(from.Brake, to.Brake, t);
                 _interpolated[(int)Channel.Steer, bin] = Lerp(Zero(from.Steer), Zero(to.Steer), t);
                 _interpolated[(int)Channel.Speed, bin] = Lerp(from.SpeedKmh, to.SpeedKmh, t);
+                if (double.IsNaN(_entryTime[bin]))
+                    _entryTime[bin] = Lerp(from.CurrentLapTime.TotalSeconds, to.CurrentLapTime.TotalSeconds, t);
                 _hasInterpolated[bin] = true;
             }
         }

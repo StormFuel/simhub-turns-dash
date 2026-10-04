@@ -41,6 +41,9 @@ namespace TurnTelemetry.Core.Input
         public bool InPitLane;
         /// <summary>The sim's sector index for the car (SimHub doesn't say where sectors start; see SectorMap).</summary>
         public int CurrentSectorIndex;
+        /// <summary>SimHub's restart flag (set when the game restarts the session) and the distance driven this session (m).</summary>
+        public bool IsSessionRestart;
+        public double SessionOdo;
         /// <summary>Your best time per sector (S1-S3) as SimHub reports it, in seconds; 0 when unknown.</summary>
         public double[] BestSectors = new double[3];
 
@@ -54,6 +57,9 @@ namespace TurnTelemetry.Core.Input
 
         /// <summary>FL, FR, RL, RR.</summary>
         public TyreReading[] Tyres = { new TyreReading(), new TyreReading(), new TyreReading(), new TyreReading() };
+
+        /// <summary>Brake temperatures FL, FR, RL, RR in SimHub's display unit (0 when the sim doesn't report them).</summary>
+        public double[] BrakeTemps = new double[4];
     }
 
     public sealed class TyreReading

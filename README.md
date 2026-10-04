@@ -9,7 +9,7 @@ A SimHub plugin and 1920×1080 dashboard for a tablet or second screen. It shows
 
 The corner tile carries on from [Assetto Corsa Turns](https://github.com/StormFuel/assetto-corsa-turns).
 
-![Turn Telemetry Dashboard in ACC at Monza](docs/images/screenshot-dashboard.png)
+![Turn Telemetry Dashboard in ACC at Silverstone](docs/images/screenshot-dashboard.png)
 
 ## Install
 
@@ -27,6 +27,7 @@ Uninstall with `Uninstall.cmd`. If you'd rather install by hand, the [user guide
 - **Standings:** position, driver, best S1–S3, best lap, delta to the fastest, and gap to the leader. Your row is always shown.
 - **Live inputs:** throttle, brake and steering over the last 6 s, plus TC/ABS intervention.
 - **Tyres:** blue cold, green ideal, yellow above, red overheated, with pressures. Presets are per sim and compound.
+- **Brakes:** a temperature bar beside each tyre that fills and changes colour as the brakes come up to temperature (blue < 200 °C, green to 650, yellow to 800, red).
 - **Car and conditions:** RPM (red on the limiter), TC, TC cut, ABS, brake bias, engine map, flag, wipers, lights, and air and track temperature.
 - **Multi-sim:** Assetto Corsa and ACC are tested. Other sims work as far as SimHub provides the data. See [what each sim supports](docs/user-guide.md#what-each-sim-supports).
 

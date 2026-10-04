@@ -46,6 +46,9 @@ namespace TurnTelemetryHost
         public PluginSettings Settings { get; private set; }
         public string UserRoot { get; private set; }
 
+        /// <summary>Wall-clock seconds since the plugin started (runs in menus too).</summary>
+        public double ClockSeconds => _clock.Elapsed.TotalSeconds;
+
         public string LeftMenuTitle => "Turn Telemetry";
         public ImageSource PictureIcon => MenuIcon.Value;
 
@@ -68,6 +71,9 @@ namespace TurnTelemetryHost
             // SET LINE (dashboard button via ButtonItem.TriggerAction; also bindable to a wheel button).
             this.AddAction("SetStartLine", (pm, action) => Engine.SetStartLine(), (pm, action) => { });
             this.AddAction("ResetTurns", (pm, action) => Engine.ResetTurns(), (pm, action) => { });
+
+            // RESET LAPS (dashboard button; also bindable to a wheel button): press twice within 3 s.
+            this.AddAction("ResetSession", (pm, action) => Log(Engine.RequestReset(ClockSeconds)), (pm, action) => { });
 
             // Problem report (also a button in the settings tab); bind to a wheel button to capture the moment.
             this.AddAction("SaveReport", (pm, action) => Log("problem report saved: " + ReportWriter.Write(this)), (pm, action) => { });

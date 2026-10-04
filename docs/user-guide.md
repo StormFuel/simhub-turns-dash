@@ -2,7 +2,7 @@
 
 Turn Telemetry is a SimHub plugin with a 1920×1080 dashboard for a tablet or second screen. It shows your telemetry turn by turn: which corner you're at, how each sector compares, where you exceeded track limits, and your inputs and tyres.
 
-![Turn Telemetry Dashboard in ACC at Monza](images/screenshot-dashboard.png)
+![Turn Telemetry Dashboard in ACC at Silverstone](images/screenshot-dashboard.png)
 
 ## Install
 
@@ -33,12 +33,13 @@ To update, run the new version's Install.cmd; it replaces the old files. To remo
 | **Turn tile** (top left) | The number and name of the corner ahead, or the one you're in (neon blue with a frame) |
 | **Track map** | SimHub's map with your car (blue) and other cars. **SET LINE**: see [Turn numbers](#turn-numbers) |
 | **Gear / speed / RPM** | RPM turns bright red on the limiter |
-| **Turns this lap** | The lap from start to finish: sectors on top, then a band per corner with its number, and a white marker for your position |
+| **Turns this lap** | The lap's corners in order 1 → max: a band per corner with its number and a white marker for your position. Each corner's band turns **green** if you gained time there against your best lap or **yellow** if you lost time, with the difference inside wider bands; corners you haven't reached yet this lap show last lap's result, dimmed. Sectors are shown above (as their own row when the game's sectors don't line up with Turn 1) |
 | **Standings** | Six rows: position, driver, best S1/S2/S3, best lap, delta to the fastest lap, gap to the leader. You're the blue row. Further back than P6, it shows the leader plus the cars around you |
 | **Inputs** | The last 6 s of throttle, brake and steering in one chart (steering centred on the 50 line, right lock at the top) |
 | **Turn / TC / ABS** | When you were in a corner, and when TC and ABS intervened |
 | **Wipers, lights, air, track** | Wiper and headlight state; air and track temperature |
 | **Tyres** | Temperature colour: blue cold, green ideal, yellow above ideal, red overheated. Pressure is coloured low (blue) or high (red), with the tyre compound below |
+| **Brakes** (`BRK`) | A bar beside each tyre, filled from 0 to 1000 °C, outlined in blue below 200 °C, green to 650 °C, yellow to 800 °C, then red, with the temperature inside (same scheme as the Button Box dashboard). Hidden in sims that don't report brake temperatures |
 | **Bottom bar** | TC, TC cut, ABS, brake bias, engine map, and the current flag |
 
 ### Colours
@@ -62,6 +63,22 @@ A sector you haven't reached yet this lap shows last lap's result, dimmed.
 
 SimHub reports which sector you're in but not where the sector lines are. So each boundary is learned **the first time you cross it**, then saved for that track. On a new track the sector row fills in during your first lap.
 
+### Why sectors and corners don't always line up
+
+The strip always lists corners in their official order, 1 → max. Sectors are the **game's own** sectors, and a game's sectors always begin at its start/finish line. Usually that line is just before Turn 1, so the sectors sit neatly over the corners. On some tracks it isn't. ACC's Silverstone line is before Copse (Turn 9), so its S1 covers Turns 9–14. In that case the sectors get **their own row**, S1 · S2 · S3, and small S1/S2/S3 tags on the strip show where each one starts on track.
+
+This is how real timing works too: sector 1 always starts at the timing line, and nobody renumbers sectors to match the corners. Keeping the game's sectors means the times match the game's own splits, and purple (fastest of anyone) still works.
+
+### Corner deltas
+
+For driving feedback, the corner bands do what race engineers do in their data software. The lap is split into one stretch per corner, and each stretch is compared with **your best time through that corner** on any lap where you stayed inside track limits there (a "theoretical best" lap made of your best corners):
+- **green:** as fast as or faster than your best there;
+- **yellow:** slower than your best there.
+
+Your first clean pass through a corner sets its best, so colours start from the second lap. If you go off at a corner, that corner gets no colour and doesn't count (the red track-limits mark shows instead). The rest of the lap still counts, so one cut doesn't spoil the whole lap's feedback.
+
+The difference shows inside the band, for example `+0.21` for two tenths lost. On narrow corners the sign sits above the number (`+` over `.21`). A minute or more lost, for example after a spin or a stop, shows as `>1m`. Each stretch runs from midway after the previous corner to midway before the next, so it includes the straight on either side. A good exit therefore shows up in the corner it came from, and the stretches cover the whole lap with nothing missed between corners.
+
 ### Track limits
 
 Each excursion is pinned to the nearest corner. That corner's band gets a **red bar**, bright for this lap and dim for earlier laps. Its number turns red, and **TRACK LIMITS n** counts the session total.
@@ -72,6 +89,18 @@ Each excursion is pinned to the nearest corner. That corner's band gets a **red 
 | ACC practice / qualifying | When the game invalidates the lap. Only the **first** offence per lap is counted |
 | **ACC race** | **Not available.** ACC reports nothing for track limits in races: its tyres-out value is always 0 and laps aren't invalidated. The strip shows **TRACK LIMITS N/A IN RACE** |
 | Other sims | When the sim invalidates the lap, if it reports that |
+
+## Resetting lap data
+
+If you restart in a way the dashboard doesn't notice (for example a manual reset), tap **RESET LAPS** in the top-right corner of the turns strip. The button changes to **CONFIRM?** for 3 seconds; tap again to reset. The turn tile shows **LAP DATA RESET**.
+
+**What's cleared:** laps and best lap, track-limits counts, sector times and bests, corner deltas, and standings.
+
+**What's kept:** turn numbering, learned sector lines and your settings.
+
+You can also bind the **ResetSession** action to a wheel button (SimHub **Controls and events**, under Turn Telemetry). Press it twice within 3 seconds.
+
+Restarting from the game's own menu is detected automatically.
 
 ## Turn numbers
 
