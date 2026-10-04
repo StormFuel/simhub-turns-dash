@@ -13824,7 +13824,39 @@
               "Formula": {
                 "JSExt": 3,
                 "Interpreter": 1,
-                "Expression": "var g='DataCorePlugin.GameData.NewData.'; function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED'],['Yellow','#FFFFD000','#FF000000','YELLOW'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE'],['Orange','#FFFF8A00','#FF000000','ORANGE'],['White','#FFFFFFFF','#FF000000','WHITE'],['Green','#FF2EE66B','#FF000000','GREEN']];for (var i=0;i<all.length;i++) { if (f(all[i][0])) return all[i][1]; }return '#FF1C211C';"
+                "Expression": "var g='DataCorePlugin.GameData.NewData.';function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK','#FFFFFFFF','#FF000000'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED','#FF000000','#FFFFFFFF'],['Yellow','#FFFFD000','#FF000000','YELLOW','#40FFD000','#FFFFD000'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE','#401E6BFF','#FF5A95FF'],['Orange','#FFFF8A00','#FF000000','ORANGE','#40FF8A00','#FFFF8A00'],['White','#FFFFFFFF','#FF000000','WHITE','#40FFFFFF','#FFFFFFFF'],['Green','#FF2EE66B','#FF000000','GREEN','#402EE66B','#FF2EE66B']];var flag=null; for (var i=0;i<all.length;i++) { if (f(all[i][0])) { flag=all[i]; break; } }var on = Math.floor(Date.now() / 350) % 2 == 0;if (!flag) return '#FF1C211C'; return on ? flag[1] : flag[4];"
+              },
+              "Mode": 2
+            }
+          }
+        },
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+          "Left": 1687.0,
+          "Top": 1009.0,
+          "Width": 188.0,
+          "Height": 42.0,
+          "Visible": true,
+          "Name": "Flag frame",
+          "IsRectangleItem": true,
+          "BackgroundColor": "#00FFFFFF",
+          "BorderStyle": {
+            "BorderColor": "#FFFFFFFF",
+            "BorderTop": 2,
+            "BorderBottom": 2,
+            "BorderLeft": 2,
+            "BorderRight": 2,
+            "RadiusTopLeft": 8,
+            "RadiusTopRight": 8,
+            "RadiusBottomLeft": 8,
+            "RadiusBottomRight": 8
+          },
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "JSExt": 3,
+                "Interpreter": 1,
+                "Expression": "var g='DataCorePlugin.GameData.NewData.';function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK','#FFFFFFFF','#FF000000'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED','#FF000000','#FFFFFFFF'],['Yellow','#FFFFD000','#FF000000','YELLOW','#40FFD000','#FFFFD000'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE','#401E6BFF','#FF5A95FF'],['Orange','#FFFF8A00','#FF000000','ORANGE','#40FF8A00','#FFFF8A00'],['White','#FFFFFFFF','#FF000000','WHITE','#40FFFFFF','#FFFFFFFF'],['Green','#FF2EE66B','#FF000000','GREEN','#402EE66B','#FF2EE66B']];var flag=null; for (var i=0;i<all.length;i++) { if (f(all[i][0])) { flag=all[i]; break; } }var on = Math.floor(Date.now() / 350) % 2 == 0;return flag != null;"
               },
               "Mode": 2
             }
@@ -13855,7 +13887,7 @@
               "Formula": {
                 "JSExt": 3,
                 "Interpreter": 1,
-                "Expression": "var g='DataCorePlugin.GameData.NewData.'; function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED'],['Yellow','#FFFFD000','#FF000000','YELLOW'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE'],['Orange','#FFFF8A00','#FF000000','ORANGE'],['White','#FFFFFFFF','#FF000000','WHITE'],['Green','#FF2EE66B','#FF000000','GREEN']];for (var i=0;i<all.length;i++) { if (f(all[i][0])) return all[i][3]; }return 'NO FLAG';"
+                "Expression": "var g='DataCorePlugin.GameData.NewData.';function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK','#FFFFFFFF','#FF000000'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED','#FF000000','#FFFFFFFF'],['Yellow','#FFFFD000','#FF000000','YELLOW','#40FFD000','#FFFFD000'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE','#401E6BFF','#FF5A95FF'],['Orange','#FFFF8A00','#FF000000','ORANGE','#40FF8A00','#FFFF8A00'],['White','#FFFFFFFF','#FF000000','WHITE','#40FFFFFF','#FFFFFFFF'],['Green','#FF2EE66B','#FF000000','GREEN','#402EE66B','#FF2EE66B']];var flag=null; for (var i=0;i<all.length;i++) { if (f(all[i][0])) { flag=all[i]; break; } }var on = Math.floor(Date.now() / 350) % 2 == 0;return flag ? flag[3] : 'NO FLAG';"
               },
               "Mode": 2
             },
@@ -13863,7 +13895,7 @@
               "Formula": {
                 "JSExt": 3,
                 "Interpreter": 1,
-                "Expression": "var g='DataCorePlugin.GameData.NewData.'; function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED'],['Yellow','#FFFFD000','#FF000000','YELLOW'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE'],['Orange','#FFFF8A00','#FF000000','ORANGE'],['White','#FFFFFFFF','#FF000000','WHITE'],['Green','#FF2EE66B','#FF000000','GREEN']];for (var i=0;i<all.length;i++) { if (f(all[i][0])) return all[i][2]; }return '#FFB4B4B4';"
+                "Expression": "var g='DataCorePlugin.GameData.NewData.';function f(n){ return $prop(g + 'Flag_' + n) == 1; }var all=[['Black','#FF111111','#FFFFFFFF','BLACK','#FFFFFFFF','#FF000000'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED','#FF000000','#FFFFFFFF'],['Yellow','#FFFFD000','#FF000000','YELLOW','#40FFD000','#FFFFD000'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE','#401E6BFF','#FF5A95FF'],['Orange','#FFFF8A00','#FF000000','ORANGE','#40FF8A00','#FFFF8A00'],['White','#FFFFFFFF','#FF000000','WHITE','#40FFFFFF','#FFFFFFFF'],['Green','#FF2EE66B','#FF000000','GREEN','#402EE66B','#FF2EE66B']];var flag=null; for (var i=0;i<all.length;i++) { if (f(all[i][0])) { flag=all[i]; break; } }var on = Math.floor(Date.now() / 350) % 2 == 0;if (!flag) return '#FFB4B4B4'; return on ? flag[2] : flag[5];"
               },
               "Mode": 2
             }

@@ -432,20 +432,33 @@ def status_bar(items):
         f"var v=$prop('{TT}Version'); if(!v) return '';"
         f"return 'TURN TELEMETRY ' + v + '  \u00b7  ' + ($prop('{TT}Adapter')||'').toUpperCase();")))
 
-    # Flag: the highest-priority flag SimHub reports, as a colour swatch with its name.
-    flags = ("var g='{GD}'; function f(n){{ return $prop(g + 'Flag_' + n) == 1; }}"
-             "var all=[['Black','#FF111111','#FFFFFFFF','BLACK'],['Checkered','#FFFFFFFF','#FF000000','CHEQUERED'],"
-             "['Yellow','#FFFFD000','#FF000000','YELLOW'],['Blue','#FF1E6BFF','#FFFFFFFF','BLUE'],"
-             "['Orange','#FFFF8A00','#FF000000','ORANGE'],['White','#FFFFFFFF','#FF000000','WHITE'],"
-             "['Green','#FF2EE66B','#FF000000','GREEN']];"
-             "for (var i=0;i<all.length;i++) {{ if (f(all[i][0])) return all[i][IDX]; }}"
-             "return DEFAULT;").format(GD=GD)
+    # Flag: the highest-priority flag SimHub reports, as a colour swatch with its name. While a flag is out the swatch
+    # flashes (350 ms phases from the clock) between the flag colour and a dark tint (black and chequered invert
+    # instead) inside a bright frame; no blur or glow, so no GPU effects. Steady and grey when there's no flag.
+    flag_table = ("var g='" + GD + "';"
+                  "function f(n){ return $prop(g + 'Flag_' + n) == 1; }"
+                  # name, on background, on text, label, off background, off text
+                  "var all=[['Black','#FF111111','#FFFFFFFF','BLACK','#FFFFFFFF','#FF000000'],"
+                  "['Checkered','#FFFFFFFF','#FF000000','CHEQUERED','#FF000000','#FFFFFFFF'],"
+                  "['Yellow','#FFFFD000','#FF000000','YELLOW','#40FFD000','#FFFFD000'],"
+                  "['Blue','#FF1E6BFF','#FFFFFFFF','BLUE','#401E6BFF','#FF5A95FF'],"
+                  "['Orange','#FFFF8A00','#FF000000','ORANGE','#40FF8A00','#FFFF8A00'],"
+                  "['White','#FFFFFFFF','#FF000000','WHITE','#40FFFFFF','#FFFFFFFF'],"
+                  "['Green','#FF2EE66B','#FF000000','GREEN','#402EE66B','#FF2EE66B']];"
+                  "var flag=null; for (var i=0;i<all.length;i++) { if (f(all[i][0])) { flag=all[i]; break; } }"
+                  "var on = Math.floor(Date.now() / 350) % 2 == 0;")
+
+    def flag_js(on_index, off_index, default):
+        return flag_table + f"if (!flag) return {default}; return on ? flag[{on_index}] : flag[{off_index}];"
+
     items.append(text('Flag label', 1620, 1005, 70, 50, 'FLAG', 22, MUTED))
     items.append(rect('Flag swatch', 1690, 1012, 182, 36, LIGHT_OFF, border(HAIRLINE, 1, 6))
-                 .bind_js('BackgroundColor', flags.replace('IDX', '1').replace('DEFAULT', f"'{LIGHT_OFF}'")))
+                 .bind_js('BackgroundColor', flag_js(1, 4, f"'{LIGHT_OFF}'")))
+    items.append(rect('Flag frame', 1687, 1009, 188, 42, CLEAR, border(TEXT, 2, 8))
+                 .bind_js('Visible', flag_table + "return flag != null;"))
     items.append(text('Flag name', 1690, 1012, 182, 36, '', FLAG_SIZE, MUTED, CENTER, display=True)
-                 .bind_js('Text', flags.replace('IDX', '3').replace('DEFAULT', "'NO FLAG'"))
-                 .bind_js('TextColor', flags.replace('IDX', '2').replace('DEFAULT', f"'{MUTED}'")))
+                 .bind_js('Text', flag_table + "return flag ? flag[3] : 'NO FLAG';")
+                 .bind_js('TextColor', flag_js(2, 5, f"'{MUTED}'")))
 
 
 def plugin_banner(items):
