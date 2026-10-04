@@ -199,3 +199,19 @@ The strip always reads **Turn 1 → max** left to right (user decision). A sim's
 Rationale: [plan.md D21](plan.md#decision-record).
 
 Each turn's band shows the time gained or lost in that corner against your best clean time through that corner on any lap (a theoretical best: a corner with a track-limits excursion or the pit lane never counts or gets a colour), the way engineers split a lap into corner segments in MoTeC or Pi. **Green** = gained (or equal), **yellow** = lost, with the delta inside the band: `-0.12` / `+0.08` on bands at least 34 px wide, the sign stacked over the digits (`+` over `.12`, `-` over `1.2`) on bands 18–34 px wide (added after an in-game test showed narrow corners had no number), colour only below that. Long values: 10 s to a minute read with one decimal (`+12.3`, narrow `+` over `12`); a minute or more lost, typically a stop or a long off, reads `>1m` (narrow `>` over `1m`, yellow). A segment over 120 s never becomes the corner's best, so a stop can't spoil later comparisons. Corners not driven yet this lap show last lap's result dimmed. The corner you're in stays blue, and the track-limits bar stays red at the foot. Segments partition the lap: each turn owns the stretch from midway after the previous corner to midway before the next (the first and last turns reach the line), so the whole lap is covered with nothing missed between corners. Times come from the lap recorder's per-bin entry times (`LapTrace.EntryTime`). The last corner's delta arrives once the finished lap's time settles. Turns that cross the line get no delta.
+
+## Brand mark (2026-10-03)
+
+![Turn Telemetry mark](brand/icon-256.png)
+
+A piece of track in the dashboard's colours. The mark was chosen by the user from several rounds of concepts (turn marker, strip, chicane, T-track); the final brief was their own.
+- **The track:** a straight with the car (neon blue, "you") near its start, a hairpin, and a 90° turn down.
+- **The kerbs** (red/white) are on the apex only: inside the hairpin from entry to halfway, then outside on the way out, running unbroken into the apex of the 90° turn.
+
+Source and generator: [`tools/brand.py`](../tools/brand.py) writes `docs/brand/`:
+- `mark.svg`;
+- icons at 24 / 64 / 256 px and a 512 px avatar;
+- `logo.png` (dark backgrounds) and `logo-light.png` (light, with a darker green for contrast);
+- `social-preview.png` (1280×640, for the GitHub repo setting).
+
+The SimHub menu icon draws the same paths as WPF vectors (`TurnTelemetry.MenuIcon`), with flat dash caps so the kerb stripes stay crisp.
